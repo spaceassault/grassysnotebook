@@ -8,7 +8,6 @@ import { LoaderData } from "~/root";
 export default function LatestArticle() {
 
 const post = useLoaderData<LoaderData>().lastPost;
-console.log(post);
 
   return (
     <div className="flex flex-col mt-12 lg:gap-6">

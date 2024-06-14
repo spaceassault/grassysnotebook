@@ -47,7 +47,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  console.log(formData.get("email"));
 
   const submission = parseWithZod(formData, { schema });
 

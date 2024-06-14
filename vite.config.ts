@@ -7,6 +7,7 @@ import autoprefixer from 'autoprefixer';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { default as rehypePrettyCode } from "rehype-pretty-code";
+import { vercelPreset } from '@vercel/remix/vite';
 
 export default defineConfig({
   plugins: [
@@ -24,7 +25,8 @@ export default defineConfig({
         v3_relativeSplatPath: true,
         v3_throwAbortReason: true,
       },
-    }),
+      presets: [vercelPreset()],
+    },),
   ],
   css: {
     postcss: {

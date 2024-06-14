@@ -12,7 +12,6 @@ import {
 export function Breadcrumbs() {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
-  console.log(pathnames);
 
   return (
     <Breadcrumb>
@@ -24,7 +23,6 @@ export function Breadcrumbs() {
         </BreadcrumbItem>
         {pathnames.map((value, index) => {
           const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-            console.log(value)
           const isLast = index === pathnames.length - 1;
           return (
             <React.Fragment key={to}>
