@@ -11,7 +11,7 @@ const themeStorage = createCookieSessionStorage({
     sameSite: "lax",
     path: "/",
     // no theme for you on Kent's 100th birthday! 😂
-    expires: new Date("2088-10-18"),
+    expires: new Date(Date.now() + 90 * 24 * 60 * 60 ),
     httpOnly: true,
   },
 });
