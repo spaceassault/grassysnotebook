@@ -23,7 +23,7 @@ const schema = z.object({
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Home" },
+    { title: "Grassy's Notebook" },
     { name: "description", content: "Welcome to my Blog!" },
   ];
 };
