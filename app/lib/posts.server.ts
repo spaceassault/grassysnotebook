@@ -25,8 +25,11 @@ export interface Post {
 }
 
 async function getPostSlugs(): Promise<string[]> {
-  const files = await fs.readdir(postsDirectory);
-  return files.filter(file => file.endsWith('.mdx')).map(file => file.replace(/\.mdx$/, ''));
+  // const files = await fs.readdir(postsDirectory);
+  // return files.filter(file => file.endsWith('.mdx')).map(file => file.replace(/\.mdx$/, ''));
+  const postsPath = path.join(process.cwd(), 'public', 'posts');
+  const files = await fs.readdir(postsPath);
+  return files.map(file => path.basename(file, path.extname(file)));
 }
 
 async function getPostBySlug(slug: string): Promise<Post> {
@@ -43,6 +46,7 @@ async function getPostBySlug(slug: string): Promise<Post> {
         },
         content,
     };
+    
 }
 
 export async function getLatestPosts(limit = 5): Promise<Post[]> {
