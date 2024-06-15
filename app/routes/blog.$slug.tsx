@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename);
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { slug } = params;
-  const filePath = path.join(__dirname, "../posts", `${slug}.mdx`);
+  const filePath = path.join(__dirname, "../../public/posts", `${slug}.mdx`);
   const source = await fs.readFile(filePath, "utf-8");
 
   const { code, frontmatter } = await bundleMDX({
