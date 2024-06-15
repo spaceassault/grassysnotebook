@@ -1,6 +1,6 @@
 import { Input } from "~/components/ui/input";
 import { Separator } from "@radix-ui/react-separator";
-import { Link, NavLink } from "@remix-run/react";
+import { NavLink } from "@remix-run/react";
 import { ThemeSwitch } from "~/routes/action.set-theme";
 import { HamburgerMenuIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "./ui/dropdown-menu";
