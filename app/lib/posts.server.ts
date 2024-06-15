@@ -32,6 +32,12 @@ async function getPostSlugs(): Promise<string[]> {
   return files.map(file => path.basename(file, path.extname(file)));
 }
 
+export async function getPostContent(slug: string) {
+  const filePath = path.join(process.cwd(), 'public', 'posts', `${slug}.mdx`);
+  const content = await fs.readFile(filePath, 'utf-8');
+  return content;
+}
+
 async function getPostBySlug(slug: string): Promise<Post> {
     const filePath = path.join(postsDirectory, `${slug}.mdx`);
     const fileContents = await fs.readFile(filePath, 'utf-8');

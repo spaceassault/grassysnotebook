@@ -6,33 +6,35 @@ import path from "path";
 import { bundleMDX } from "mdx-bundler";
 import { getMDXComponent } from "mdx-bundler/client";
 import { fileURLToPath } from "url";
-import { Breadcrumbs } from "~/components/breadcrumbs";
 
 // Handle ESM environment
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
   const { slug } = params;
-  const filePath = path.join(__dirname, "../../public/posts", `${slug}.mdx`);
-  const source = await fs.readFile(filePath, "utf-8");
-
-  const { code, frontmatter } = await bundleMDX({
-    source,
-    cwd: path.join(__dirname, "../"),
-    esbuildOptions: (options) => {
-      options.loader = {
-        ...options.loader,
-        ".js": "jsx",
-        ".ts": "tsx",
-      };
-      options.platform = "node";
-      return options;
-    },
-  });
-
-  return json({ code, frontmatter });
-}
+  const filePath = path.join(process.cwd(), 'public', 'posts', `${slug}.mdx`);
+  
+  try {
+    const source = await fs.readFile(filePath, 'utf-8');
+    const { code, frontmatter } = await bundleMDX({
+      source,
+      cwd: path.join(process.cwd(), 'public', 'posts'),
+      esbuildOptions: (options) => {
+        options.loader = {
+          ...options.loader,
+          '.js': 'jsx',
+          '.ts': 'tsx',
+        };
+        options.platform = 'node';
+        return options;
+      },
+    });
+    return json({ code, frontmatter });
+  } catch (error) {
+    throw new Response('Not Found', { status: 404 });
+  }
+};
 
 export default function BlogPost() {
   const { code, frontmatter } = useLoaderData<LoaderFunction>();
