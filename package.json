@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "remix vite:dev",
-    "build": "prisma generate && remix vite:build",
-    "postbuild": "cp -r content/posts build/content/posts",
+    "build": "prisma generate && remix vite:build && cp -r content/posts build/content/posts",
     "lint": "eslint . --fix",
     "typecheck": "tsc --noEmit"
   },
