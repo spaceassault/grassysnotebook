@@ -2,7 +2,7 @@ import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { Card } from "./ui/card";
 import { Link, useLoaderData } from "@remix-run/react";
 import type { PostFrontmatter } from "~/types/post"
-import { getThumbnailUrl } from "~/lib/cloudinary.server";
+import { getThumbnailUrl } from "~/lib/cloudinary";
 
 export default function LatestArticle() {
 
