@@ -11,30 +11,27 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const loader: LoaderFunction = async ({ params }: LoaderFunctionArgs) => {
+export async function loader({ params }: LoaderFunctionArgs) {
   const { slug } = params;
-  const filePath = path.join(process.cwd(), 'public', 'posts', `${slug}.mdx`);
-  
-  try {
-    const source = await fs.readFile(filePath, 'utf-8');
-    const { code, frontmatter } = await bundleMDX({
-      source,
-      cwd: path.join(process.cwd(), 'public', 'posts'),
-      esbuildOptions: (options) => {
-        options.loader = {
-          ...options.loader,
-          '.js': 'jsx',
-          '.ts': 'tsx',
-        };
-        options.platform = 'node';
-        return options;
-      },
-    });
-    return json({ code, frontmatter });
-  } catch (error) {
-    throw new Response('Not Found', { status: 404 });
-  }
-};
+  const filePath = path.join(__dirname, "../../public/posts", `${slug}.mdx`);
+  const source = await fs.readFile(filePath, "utf-8");
+
+  const { code, frontmatter } = await bundleMDX({
+    source,
+    cwd: path.join(__dirname, "../"),
+    esbuildOptions: (options) => {
+      options.loader = {
+        ...options.loader,
+        ".js": "jsx",
+        ".ts": "tsx",
+      };
+      options.platform = "node";
+      return options;
+    },
+  });
+
+  return json({ code, frontmatter });
+}
 
 export default function BlogPost() {
   const { code, frontmatter } = useLoaderData<LoaderFunction>();
