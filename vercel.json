@@ -1,0 +1,13 @@
+{
+    "buildCommand": "npm run build",
+    "cleanUrls": true,
+    "devCommand": "npm start",
+    "framework": "remix",
+    "installCommand": "npm install",
+    "redirects": [],
+    "trailingSlash": false,
+    "public": [
+        "public",
+        "posts"
+      ]
+}
