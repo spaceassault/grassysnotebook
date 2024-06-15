@@ -17,6 +17,9 @@ import clsx from "clsx";
 import ErrorPage from "./components/errorPage";
 import { ReactNode } from "react";
 import Footer from "./components/footer";
+import ProgressBar from "./components/progressbar";
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/remix"
 
 // Use the links function to include the stylesheet
 export const links: LinksFunction = () => [
@@ -54,7 +57,7 @@ function App({ title }: DocumentProps) {
   const data = useLoaderData<LoaderData>();
 
   const [theme] = useTheme();
-  
+
   return (
     <html lang="en" className={clsx(theme)}>
       <head>
@@ -66,6 +69,9 @@ function App({ title }: DocumentProps) {
         <NonFlashOfWrongThemeEls ssrTheme={Boolean(data.theme)} />
       </head>
       <body className="bg-background min-w-full min-h-full">
+        <Analytics />
+        <SpeedInsights />
+        <ProgressBar />
         <Navbar />
         <Outlet />
         <Footer />

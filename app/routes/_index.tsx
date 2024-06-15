@@ -2,7 +2,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remi
 import FeaturedList from "~/components/featuredlist";
 import BlogList from "~/components/bloglist";
 import { getFeaturedPosts, getLatestPost, getPosts, getPostsByTopic, getTopics } from "~/lib/posts.server";
-import { Form, json, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, json, useActionData } from "@remix-run/react";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { z } from "zod";
@@ -12,7 +12,7 @@ import { prisma } from "~/lib/prisma.server";
 import { ReactNode } from "react";
 import BlogCategories from "~/components/blogCategories";
 import LatestArticle from "~/components/latestArticle";
-import type { Post } from "~/types/post";
+import type { PostFrontmatter } from "~/types/post";
 
 //zod schema for newsletter signup
 const schema = z.object({
@@ -32,7 +32,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const category = url.searchParams.get("category");
 
-  let posts: Post[] = [];
+  let posts: PostFrontmatter[] = [];
   if (category) {
     posts = await getPostsByTopic(category);
   } else {

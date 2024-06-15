@@ -6,8 +6,6 @@ export default function BlogCategories() {
     if (!Array.isArray(topics) || topics.length === 0) {
         return <div>No featured articles found.</div>;
       }
-
-    console.log(topics);
     
     return (
         <div className="lg:flex flex-col mb-8">

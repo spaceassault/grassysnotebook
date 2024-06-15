@@ -9,6 +9,11 @@ import {
   BreadcrumbPage,
 } from "~/components/ui/breadcrumb";
 
+// Utility function to capitalize the first letter of a string
+function capitalizeFirstLetter(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 export function Breadcrumbs() {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
@@ -16,7 +21,7 @@ export function Breadcrumbs() {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem>
+        <BreadcrumbItem className="text-sm md:text-lg lg:text-xl">
           <BreadcrumbLink href="/">
             Home
           </BreadcrumbLink>
@@ -27,12 +32,12 @@ export function Breadcrumbs() {
           return (
             <React.Fragment key={to}>
               <SlashIcon />
-              <BreadcrumbItem>
+              <BreadcrumbItem className="text-sm md:text-lg lg:text-xl">
                 {isLast ? (
-                  <BreadcrumbPage>{value}</BreadcrumbPage>
+                  <BreadcrumbPage>{capitalizeFirstLetter(value)}</BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink href={to}>
-                    {value}
+                    {capitalizeFirstLetter(value)}
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>

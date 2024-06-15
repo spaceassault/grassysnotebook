@@ -10,9 +10,11 @@ export default function BlogList() {
     return <div>No posts found.</div>;
   }
 
+  const postsToDisplay = posts.slice(1);
+
   return (
     <div className="mt-12 lg:grid lg:grid-cols-2 lg:gap-6">
-      {posts.map((post) => {
+      {postsToDisplay.map((post) => {
         const { slug, title, description, image, date } = post;
         return (
           <Card key={slug} className="mt-4 p-4 rounded overflow-hidden">
