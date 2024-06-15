@@ -7,7 +7,6 @@ import { getPostBySlug } from '~/lib/posts.server';
 export const loader: LoaderFunction = async ({ params }) => {
   const { slug } = params;
   const post = await getPostBySlug(slug);
-  console.log(post);
   return json(post);
 };
 

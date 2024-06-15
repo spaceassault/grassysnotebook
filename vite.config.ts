@@ -8,7 +8,6 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { default as rehypePrettyCode } from "rehype-pretty-code";
 import { vercelPreset } from '@vercel/remix/vite';
-import {Mode, plugin as markdown} from "vite-plugin-markdown"
 
 export default defineConfig({
   plugins: [
@@ -19,7 +18,6 @@ export default defineConfig({
       ],
       rehypePlugins: [rehypePrettyCode],
     }),
-    markdown({mode: [Mode.MARKDOWN]}),
     tsconfigPaths(),
     remix({
       future: {

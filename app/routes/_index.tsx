@@ -45,6 +45,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   // console.log("These are the featured posts", featured);
   // console.log("These are the topics", topics);
+  // console.log("This is the last post", lastPost);
+  // console.log("These are the posts", posts);
 
   return json({"posts": posts, "featured": featured, "topics": topics, "lastPost": lastPost});
 }

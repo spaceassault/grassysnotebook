@@ -1,27 +1,19 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import { Card } from "./ui/card";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
-import { LoaderData } from "~/root";
+import { PostFrontmatter } from "~/types/post";
 
 export default function BlogList() {
-  const posts = useLoaderData<LoaderData>().posts;
+  const { posts } = useLoaderData<{posts: PostFrontmatter[]}>();
   
-  if (posts.length === 0) {
+  if (!posts) {
     return <div>No posts found.</div>;
   }
 
   return (
     <div className="mt-12 lg:grid lg:grid-cols-2 lg:gap-6">
       {posts.map((post) => {
-        // Ensure that post properties are defined
-        const {
-          slug = '',
-          title = 'No Title',
-          date = '',
-          image = 'default-image-url', // Provide a default image URL
-          description = 'No Description',
-        } = post || {}; // Default values to prevent undefined access
-
+        const { slug, title, description, image, date } = post;
         return (
           <Card key={slug} className="mt-4 p-4 rounded overflow-hidden">
             <AspectRatio ratio={16 / 9}>
