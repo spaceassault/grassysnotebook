@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useLoaderData } from '@remix-run/react';
 import { json, LoaderFunction } from '@remix-run/node';
-import { getPostBySlug } from '~/lib/mdx.server';
 import { getMDXComponent } from 'mdx-bundler/client';
+import { getPostBySlug } from '~/lib/posts.server';
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { slug } = params;
   const post = await getPostBySlug(slug);
+  console.log(post);
   return json(post);
 };
 

@@ -1,8 +1,8 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import FeaturedList from "~/components/featuredlist";
 import BlogList from "~/components/bloglist";
-import { getAllPosts, getFeaturedPosts, getLastPost, getPostsByTopic, getTopics, Post } from "~/lib/posts.server";
-import { Form, json, useActionData } from "@remix-run/react";
+import { getFeaturedPosts, getLatestPost, getPosts, getPostsByTopic, getTopics } from "~/lib/posts.server";
+import { Form, json, useActionData, useLoaderData } from "@remix-run/react";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { z } from "zod";
@@ -12,6 +12,7 @@ import { prisma } from "~/lib/prisma.server";
 import { ReactNode } from "react";
 import BlogCategories from "~/components/blogCategories";
 import LatestArticle from "~/components/latestArticle";
+import type { Post } from "~/types/post";
 
 //zod schema for newsletter signup
 const schema = z.object({
@@ -35,14 +36,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (category) {
     posts = await getPostsByTopic(category);
   } else {
-    posts = await getAllPosts();
+    posts = await getPosts();
   }
 
   const featured = await getFeaturedPosts();
   const topics = await getTopics();
-  const lastPost = await getLastPost();
+  const lastPost = await getLatestPost();
 
-  return json({posts, featured, topics, lastPost});
+  // console.log("These are the featured posts", featured);
+  // console.log("These are the topics", topics);
+
+  return json({"posts": posts, "featured": featured, "topics": topics, "lastPost": lastPost});
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
