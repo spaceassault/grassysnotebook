@@ -5,6 +5,5 @@
     "framework": "remix",
     "installCommand": "npm install",
     "redirects": [],
-    "trailingSlash": false,
-    "public": true
+    "trailingSlash": false
 }
