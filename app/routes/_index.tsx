@@ -13,6 +13,8 @@ import { ReactNode } from "react";
 import BlogCategories from "~/components/blogCategories";
 import LatestArticle from "~/components/latestArticle";
 import type { PostFrontmatter } from "~/types/post";
+import { HoneypotInputs } from "remix-utils/honeypot/react";
+import { honeypot } from "~/lib/honeypot.server";
 
 //zod schema for newsletter signup
 const schema = z.object({
@@ -53,6 +55,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
+  honeypot.check(formData);
 
   const submission = parseWithZod(formData, { schema });
 
@@ -109,13 +112,14 @@ export default function Index() {
           <LatestArticle />
           <BlogList />
         </div>
-        <div className="flex flex-col md:col-span-4 md:col-start-10 mt-8">
+        <div className="flex flex-col md:col-span-4 md:col-start-10 mt-4">
           <FeaturedList />
           <BlogCategories />
           <div className="mt-8">
             <h1 className="text-3xl text-primary font-bold py-4">Sign Up For My Newsletter</h1>
             <p className="text-primary py-2">Be the first to learn about new articles and website updates</p>
             <Form method="POST" className="flex flex-col py-2" id={form.id}>
+              <HoneypotInputs />
               <Input id={fields.email.id} name={fields.email.name} type="email" placeholder="Email" className="p-2" required/>
               <div id={fields.email.errorId} className="text-destructive">{fields.email.errors}</div>
               {(lastResult as { success: boolean; error: ReactNode })?.success === false && (

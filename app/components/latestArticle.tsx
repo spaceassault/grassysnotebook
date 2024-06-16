@@ -11,7 +11,7 @@ const image = post.image || "";
 const thumbnailUrl = getThumbnailUrl(image, 1280, 720);
 
   return (
-    <div className="flex flex-col mt-12 lg:gap-6">
+    <div className="flex flex-col lg:gap-6">
       <Card key={post.slug} className="mt-4 p-4 rounded overflow-hidden">
         <AspectRatio ratio={16 / 9}>
           <img className="rounded-md object-cover" src={thumbnailUrl} alt={post.title} />

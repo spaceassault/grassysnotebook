@@ -20,6 +20,8 @@ import Footer from "./components/footer";
 import ProgressBar from "./components/progressbar";
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/remix"
+import { honeypot } from "./lib/honeypot.server";
+import { HoneypotProvider } from 'remix-utils/honeypot/react';
 
 // Use the links function to include the stylesheet
 export const links: LinksFunction = () => [
@@ -36,13 +38,16 @@ export const meta: MetaFunction = ({ data }) => {
 
 export type LoaderData = {
   theme: Theme | null;
+  honeyProps: ReturnType<typeof honeypot.getInputProps>;
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const themeSession = await getThemeSession(request);
+  const honeyProps = honeypot.getInputProps()
 
   const data: LoaderData = {
     theme: themeSession.getTheme(),
+    honeyProps,
   };
 
   return data;
@@ -86,9 +91,11 @@ export default function AppWithProviders() {
   const data = useLoaderData<LoaderData>();
 
   return (
+    <HoneypotProvider {...data.honeyProps}>
       <ThemeProvider specifiedTheme={data.theme} >
         <App />
       </ThemeProvider>
+    </HoneypotProvider>
   );
 }
 

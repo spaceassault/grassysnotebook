@@ -12,7 +12,7 @@ export default function Navbar() {
   return (
     <>
     <nav className="flex items-center justify-between px-6 py-9 lg:px-12 text-foreground">
-      <div className="md:flex md:items-center md:space-x-6">
+      <div className="flex items-center space-x-6">
       <NavLink to="/" className="ml-8 text-2xl md:text-3xl lg:text-4xl font-bold" prefetch="intent">
         <LogoHorizontal className="h-auto w-96 max-w-[14rem] md:max-w-[24rem] lg:max-w-[28rem]" />
         {/* <img
