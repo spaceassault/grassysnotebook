@@ -5,7 +5,7 @@ export const loader: LoaderFunction = async () => {
     User-agent: *
     Allow: /
 
-    Sitemap: https://www.grassynoll/sitemap.xml
+    Sitemap: https://www.grassysnotebook/sitemap.xml
   `;
 
   return new Response(robots, {

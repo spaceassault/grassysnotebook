@@ -3,7 +3,7 @@ import { getPosts } from "~/lib/posts.server"; // Adjust this import based on yo
 
 export const loader: LoaderFunction = async () => {
   const posts = await getPosts();
-  const siteUrl = "https://www.grassynoll.com"; // Use localhost for local testing
+  const siteUrl = "https://www.grassysnotebook.com"; // Use localhost for local testing
 
   const staticPages = [
     "",
