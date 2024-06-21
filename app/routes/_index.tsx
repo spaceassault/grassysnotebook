@@ -55,14 +55,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
+  honeypot.check(formData);
   const submission = parseWithZod(formData, { schema });
 
   // Report the submission to client if it is not successful
   if (submission.status !== 'success') {
     return submission.reply();
   }
-
-  honeypot.check(formData);
 
   const email = submission.value.email;
 

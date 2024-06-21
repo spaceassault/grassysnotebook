@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import type { Expression } from "fuse.js";
 import Fuse from "fuse.js";
-import type { PostFrontmatter, Tag } from "~/types/post";
+import type { Post, PostFrontmatter, Tag } from "~/types/post";
 import { bundleMDX } from 'mdx-bundler';
 
 
@@ -11,7 +11,7 @@ const getPostFiles = () => {
     return fs.readdirSync(path.join(process.cwd(), 'app/posts')).filter(file => file.endsWith('.md') || file.endsWith('.mdx'));
 };
 
-const getPostBySlug = async (slug: string) => {
+const getPostBySlug = async (slug: string): Promise<Post> => {
     const filePath = path.join(process.cwd(), 'app/posts', `${slug}.mdx`);
     const source = fs.readFileSync(filePath, 'utf8');
 
@@ -21,7 +21,7 @@ const getPostBySlug = async (slug: string) => {
     });
 
     return {
-        frontmatter,
+        frontmatter: frontmatter as PostFrontmatter,
         code,
     };
 };
@@ -34,8 +34,8 @@ const getPosts = async (count?: number): Promise<PostFrontmatter[]> => {
         const { frontmatter } = await getPostBySlug(slug);
 
         return {
-            slug,
             ...frontmatter,
+            slug,
         } as PostFrontmatter;
     }));
 

@@ -1,5 +1,5 @@
 type Post = {
-    html: string
+    code: string
     frontmatter: PostFrontmatter
 }
 

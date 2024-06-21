@@ -1,5 +1,15 @@
-import { Outlet } from "@remix-run/react";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { Outlet, redirect } from "@remix-run/react";
 import { Breadcrumbs } from "~/components/breadcrumbs";
+
+//Loader function to re-direct to /index if route is /blog
+export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  if (url.pathname === "/blog") {
+    return redirect("/");
+  }
+  return null;
+}
 
 export default function Blog() {
   return (

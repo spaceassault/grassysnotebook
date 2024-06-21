@@ -3,15 +3,19 @@ import { useLoaderData } from '@remix-run/react';
 import { json, LoaderFunction } from '@remix-run/node';
 import { getMDXComponent } from 'mdx-bundler/client';
 import { getPostBySlug } from '~/lib/posts.server';
+import { Post } from '~/types/post';
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { slug } = params;
-  const post = await getPostBySlug(slug);
+  const post = await getPostBySlug(slug as string);
+  if (!post) {
+    return json({ message: 'Post not found' }, { status: 404 });
+  }
   return json(post);
 };
 
 export default function BlogPost() {
-  const { code, frontmatter } = useLoaderData();
+  const { code, frontmatter } = useLoaderData<Post>();
   const Component = React.useMemo(() => getMDXComponent(code), [code]);
 
   return (
