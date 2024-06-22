@@ -6,7 +6,7 @@ import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
-import { default as rehypePrettyCode } from "rehype-pretty-code";
+// import { default as rehypePrettyCode } from "rehype-pretty-code";
 import { vercelPreset } from '@vercel/remix/vite';
 
 export default defineConfig({
@@ -16,7 +16,10 @@ export default defineConfig({
         remarkFrontmatter,
         remarkMdxFrontmatter,
       ],
-      rehypePlugins: [rehypePrettyCode],
+      // rehypePlugins: [[rehypePrettyCode, {
+      //   theme: "one-dark-pro", // Choose your preferred theme
+      //   keepBackground: true, // Keep the background from the theme
+      // }]],
     }),
     tsconfigPaths(),
     remix({

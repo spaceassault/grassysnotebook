@@ -1,5 +1,5 @@
 import { LoaderFunction } from "@remix-run/node";
-import { getPosts } from "~/lib/posts.server"; // Adjust this import based on your project structure
+import { getPosts } from "~/utils/posts.server"; // Adjust this import based on your project structure
 
 export const loader: LoaderFunction = async () => {
   const posts = await getPosts();

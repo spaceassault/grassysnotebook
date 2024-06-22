@@ -1,7 +1,7 @@
 import { SunIcon, MoonIcon } from '@radix-ui/react-icons'
 import { useFetcher } from "@remix-run/react"
 import { Button } from "~/components/ui/button"
-import { Theme, useTheme } from "~/lib/theme-provider"
+import { Theme, useTheme } from "~/utils/theme-provider"
 
 export interface DarkModeToggleProps {
   handleThemeChange: (theme: Theme) => void;

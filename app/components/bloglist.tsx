@@ -2,7 +2,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { Card } from "./ui/card";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { PostFrontmatter } from "~/types/post";
-import { getThumbnailUrl } from "~/lib/cloudinary";
+import { getThumbnailUrl } from "~/utils/cloudinary";
 
 export default function BlogList() {
   const posts = useLoaderData<{posts: PostFrontmatter[]}>().posts;

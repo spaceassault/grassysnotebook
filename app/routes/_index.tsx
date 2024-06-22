@@ -1,20 +1,20 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import FeaturedList from "~/components/featuredlist";
 import BlogList from "~/components/bloglist";
-import { getFeaturedPosts, getLatestPost, getPosts, getPostsByTopic, getTopics } from "~/lib/posts.server";
+import { getFeaturedPosts, getLatestPost, getPosts, getPostsByTopic, getTopics } from "~/utils/posts.server";
 import { Form, json, useActionData } from "@remix-run/react";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { z } from "zod";
 import { parseWithZod, getZodConstraint } from '@conform-to/zod';
 import { useForm } from '@conform-to/react';
-import { prisma } from "~/lib/prisma.server";
+import { prisma } from "~/utils/prisma.server";
 import { ReactNode } from "react";
 import BlogCategories from "~/components/blogCategories";
 import LatestArticle from "~/components/latestArticle";
 import type { PostFrontmatter } from "~/types/post";
 import { HoneypotInputs } from "remix-utils/honeypot/react";
-import { honeypot } from "~/lib/honeypot.server";
+import { honeypot } from "~/utils/honeypot.server";
 
 //zod schema for newsletter signup
 const schema = z.object({

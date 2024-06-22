@@ -1,0 +1,194 @@
+---
+title: "My First Blog Post"
+date: "2024-06-15"
+image: "https://res.cloudinary.com/djjxx8zcu/image/upload/v1718468094/Grassys%20Notebook/Posts/My_First_Post_Cover_Image_gkmku8.png"
+description: "This is my first blog post written in MDX."
+tags: mdx, remix, blog
+topic: Programming
+author: Grassy
+featured: true
+---
+
+## Table of Contents
+
+# Hello, world!
+
+I wanted to take some time to write my first blog post using markdown (MDX) in Remix. Writing content in MDX is extremely easy and allows integration across various platforms. I drew insperation from the [Remix blog](https://remix.run/blog), [Pedro Cattori](https://github.com/pcattori/remix-blog-mdx), [Brad Garropy](https://github.com/bradgarropy/bradgarropy.com/), and [Raj Talks Tech](https://www.youtube.com/@raj_talks_tech) to create my own blog. Piecing together the various parts of the code to create this blog was a fun and rewarding experience. There are a few things that make this deployment unique. First, I am using [Remix](https://remix.run) as the framework to build this blog. Remix is a full-stack framework that allows developers to build web applications using React. Second, I am using [Vercel](https://vercel.com) to deploy this blog. Vercel is a cloud platform that allows developers to easily deploy web applications. I am using [MDX](https://mdxjs.com) to write my blog posts. MDX is a markdown syntax that allows you to write JSX in markdown. This allows for creating dynamic content that can be rendered for the client. I am also using [Tailwind CSS](https://tailwindcss.com) and [Shadcn UI](https://ui.shadcn.com/) for styling and [Cloudinary](https://cloudinary.com) to host the images. Also, there is an integration with Prisma for a PostgreSQL database for my mailing list and future expansion of user accounts. The code can be found on my [GitHub Page](https://github.com/spaceassault/grassysnotebook).
+
+## Setting Up MDX with Remix
+
+To get started, I created a new Remix project. Then, I installed the necessary packages for MDX support:
+
+```bash
+npm install @mdx-js/rollup remark-frontmatter remark-mdx-frontmatter rehype-pretty-code
+```
+
+Depending on your stack and needs, you may have to install slightly different packages. In my case I am using Remix.run with the vite plugin. My vite.config.ts file looks like this:
+
+```javascript
+import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import { vitePlugin as remix } from '@remix-run/dev';
+import mdx from '@mdx-js/rollup';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
+import remarkFrontmatter from 'remark-frontmatter';
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
+import { default as rehypePrettyCode } from "rehype-pretty-code";
+import { vercelPreset } from '@vercel/remix/vite';
+
+export default defineConfig({
+  plugins: [
+    mdx({
+      remarkPlugins: [
+        remarkFrontmatter,
+        remarkMdxFrontmatter,
+      ],
+    }),
+    tsconfigPaths(),
+    remix({
+      future: {
+        v3_fetcherPersist: true,
+        v3_relativeSplatPath: true,
+        v3_throwAbortReason: true,
+      },
+      presets: [vercelPreset()],
+    },),
+  ],
+  css: {
+    postcss: {
+      plugins: [
+        tailwindcss,
+        autoprefixer,
+      ],
+    },
+  },
+});
+```
+
+This configuration file sets up the necessary plugins for MDX support. The `mdx` plugin is used to compile MDX files. The `remarkPlugins` and `rehypePlugins` options are used to configure the plugins that are used to parse and transform the MDX files. The `remark-frontmatter` and `remark-mdx-frontmatter` plugins are used to parse the frontmatter in the MDX files. 
+
+## Setting Up the Blog Posts server
+The blog post server is set up in my utils folder and is named `posts.server.ts`. This file reads the blog posts from the file system and serves them to the client. The server is set up with a few essential functions; first, there is the `getPostFiles` function:
+
+```typescript
+// utils/posts.server.ts
+const getPostFiles = () => {
+    return fs.readdirSync(path.join(process.cwd(), 'app/posts')).filter(file => file.endsWith('.md') || file.endsWith('.mdx'));
+};
+```
+
+Then there is the 'getPostBySlug' function:
+
+```typescript
+const getPostBySlug = async (slug: string): Promise<Post> => {
+    const filePath = path.join(process.cwd(), 'app/posts', `${slug}.mdx`);
+    const source = fs.readFileSync(filePath, 'utf8');
+    const { code, frontmatter } = await compileMDX(source);
+  
+    return {
+      frontmatter: frontmatter as PostFrontmatter,
+      code,
+    };
+  };
+  ```
+
+The `getPostBySlug` function relies on the `compileMDX` function to compile the MDX files and ensure they are formatted appropriately. In this function I use the [Remark TOC](https://github.com/remarkjs/remark-toc), [Remark Prism](https://github.com/sergioramos/remark-prism), and [Remark Gfm](https://github.com/remarkjs/remark-gfm) plugins to enhance the formating of my posts. The 'compileMDX' function is defined as follows:
+
+```typescript
+// Function to compile MDX content with syntax highlighting, TOC, and GFM
+const compileMDX = async (source: string) => {
+    const { code, frontmatter } = await bundleMDX({
+      source,
+      cwd: path.join(process.cwd(), 'app/posts'),
+      mdxOptions(options) {
+        options.remarkPlugins = [
+          ...(options.remarkPlugins ?? []),
+          remarkPrism,
+          [remarkToc, { heading: 'Table of contents', maxDepth: 2 }],
+          remarkGfm
+        ];
+        return options;
+      },
+    });
+  
+    return { code, frontmatter };
+  };
+  ```
+
+Next, I set up the `getPosts`, `getTopics`, and `getFeaturedPosts` to dynamically pull in the posts information to the `index.tsx` route file. These functions use `remark-frontmatter` to read the metadata from the MDX files.
+
+## Blog Route Structure
+All blog posts are stored in the `app/posts` directory. I set up a `blog.tsx` and `blog.$slug.tsx` files in the `routes` directory to handle the blog post routes. The `blog.tsx` file is used for formatting with a Remix `<Outlet>`. The `blog.$slug.tsx` file displays an individual blog post. The `blog.tsx` file is setup as follows:
+
+```typescript
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { Outlet, redirect } from "@remix-run/react";
+import { Breadcrumbs } from "~/components/breadcrumbs";
+
+//Loader function to re-direct to /index if route is /blog
+export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  if (url.pathname === "/blog") {
+    return redirect("/");
+  }
+  return null;
+}
+
+export default function Blog() {
+  return (
+    // container
+    <div className="flex flex-col w-full items-center">
+      <div className="w-full max-w-screen-xl px-4">
+        <div className="ml-0 sm:ml-4">
+          <Breadcrumbs />
+        </div>
+        <div className="flex flex-col items-center mt-8 p-4 w-full">
+          <div className="prose sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto" style={{ maxWidth: "90%" }}>
+            <Outlet />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+and the `blog.$slug.tsx` file is setup as follows:
+
+```typescript
+import * as React from 'react';
+import { useLoaderData } from '@remix-run/react';
+import { json, LoaderFunction } from '@remix-run/node';
+import { getMDXComponent } from 'mdx-bundler/client';
+import { getPostBySlug } from '~/utils/posts.server';
+import { Post } from '~/types/post';
+
+export const loader: LoaderFunction = async ({ params }) => {
+  const { slug } = params;
+  const post = await getPostBySlug(slug as string);
+  if (!post) {
+    return json({ message: 'Post not found' }, { status: 404 });
+  }
+  return json(post);
+};
+
+export default function BlogPost() {
+  const { code, frontmatter } = useLoaderData<Post>();
+  const Component = React.useMemo(() => getMDXComponent(code), [code]);
+
+  return (
+    <div className="mt-4 max-xl">
+      <h1>{frontmatter.title}</h1>
+      <h3>by: {frontmatter.author}</h3>
+      <p>{frontmatter.date}</p>
+      <Component />
+    </div>
+  );
+}
+```
+
+## Conclusion
+I hope this post has helped you understand how I set up a blog using MDX and Remix. I have enjoyed the process of creating this blog and look forward to writing more posts in the future. If you have any questions or comments, please feel free to reach out to me on [X](https://x.com/JasonNoll4). I look forward to hearing from you!
+
+

@@ -1,3 +1,5 @@
+@import "prism-themes/themes/prism-one-dark.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -78,9 +80,9 @@
       --tw-prose-quotes: #111827;
       --tw-prose-quote-borders: #e5e7eb;
       --tw-prose-captions: #6b7280;
-      --tw-prose-code: #e11d48;
-      --tw-prose-pre-code: #e11d48;
-      --tw-prose-pre-bg: #f9fafb;
+      --tw-prose-code: #abb2bf;
+      --tw-prose-pre-code: #abb2bf;
+      --tw-prose-pre-bg: #3a3f4b;
       --tw-prose-th-borders: #d1d5db;
       --tw-prose-td-borders: #e5e7eb;
     }
@@ -96,11 +98,41 @@
       --tw-prose-quotes: #f9fafb;
       --tw-prose-quote-borders: #4b5563;
       --tw-prose-captions: #9ca3af;
-      --tw-prose-code: #f87171;
-      --tw-prose-pre-code: #f87171;
-      --tw-prose-pre-bg: #1f2937;
+      --tw-prose-code: #5c6370;
+      --tw-prose-pre-code: #5c6370;
+      --tw-prose-pre-bg: #282c34;
       --tw-prose-th-borders: #4b5563;
       --tw-prose-td-borders: #374151;
+    }
+  
+    pre {
+      overflow-x: auto;
+      padding: 1rem;
+      background: #282c34;
+      color: #abb2bf;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+    }
+    code {
+      background: #1e1e1e;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.3rem;
+      font-family: Consolas, "Courier New", monospace;
+    }
+    pre [data-line] {
+      padding: 0 1rem;
+    }
+    code[data-line-numbers] {
+      counter-reset: line;
+    }
+    code[data-line-numbers] > [data-line]::before {
+      counter-increment: line;
+      content: counter(line);
+      display: inline-block;
+      width: 1rem;
+      margin-right: 1rem;
+      text-align: right;
+      color: gray;
     }
   }
 

@@ -11,8 +11,8 @@ import {
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import styles from '~/tailwind.css?url'
 import Navbar from "./components/navbar";
-import { getThemeSession } from "~/lib/theme.server";
-import { NonFlashOfWrongThemeEls, Theme, ThemeProvider, useTheme } from "~/lib/theme-provider";
+import { getThemeSession } from "~/utils/theme.server";
+import { NonFlashOfWrongThemeEls, Theme, ThemeProvider, useTheme } from "~/utils/theme-provider";
 import clsx from "clsx";
 import ErrorPage from "./components/errorPage";
 import { ReactNode } from "react";
@@ -20,13 +20,12 @@ import Footer from "./components/footer";
 import ProgressBar from "./components/progressbar";
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/remix"
-import { honeypot } from "./lib/honeypot.server";
+import { honeypot } from "./utils/honeypot.server";
 import { HoneypotProvider } from 'remix-utils/honeypot/react';
 
 // Use the links function to include the stylesheet
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
-  
 ];
 
 export const meta: MetaFunction = ({ data }) => {

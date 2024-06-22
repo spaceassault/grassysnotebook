@@ -10,8 +10,9 @@ import {
 } from "~/components/ui/breadcrumb";
 
 // Utility function to capitalize the first letter of a string
-function capitalizeFirstLetter(value: string) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
+function formatBreadcrumb(value: string) {
+  const formattedValue = value.replace(/-/g, ' ');
+  return formattedValue.charAt(0).toUpperCase() + formattedValue.slice(1);
 }
 
 export function Breadcrumbs() {
@@ -34,10 +35,10 @@ export function Breadcrumbs() {
               <SlashIcon />
               <BreadcrumbItem className="text-sm md:text-lg lg:text-xl">
                 {isLast ? (
-                  <BreadcrumbPage>{capitalizeFirstLetter(value)}</BreadcrumbPage>
+                  <BreadcrumbPage>{formatBreadcrumb(value)}</BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink href={to}>
-                    {capitalizeFirstLetter(value)}
+                    {formatBreadcrumb(value)}
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>

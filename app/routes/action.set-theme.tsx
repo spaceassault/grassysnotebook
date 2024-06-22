@@ -1,8 +1,8 @@
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 
-import { getThemeSession } from "~/lib/theme.server";
-import { isTheme, Theme } from "~/lib/theme-provider";
+import { getThemeSession } from "~/utils/theme.server";
+import { isTheme, Theme } from "~/utils/theme-provider";
 import { useFetcher } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/dark-mode-toggle";
 

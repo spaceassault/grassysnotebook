@@ -1,10 +1,30 @@
 
 import fs from 'fs';
-import path from 'path';
-import type { Expression } from "fuse.js";
-import Fuse from "fuse.js";
-import type { Post, PostFrontmatter, Tag } from "~/types/post";
+import path from 'path'
+import remarkPrism from 'remark-prism';
+import remarkToc from 'remark-toc';
+import remarkGfm from 'remark-gfm';
 import { bundleMDX } from 'mdx-bundler';
+import type { Post, PostFrontmatter, Tag } from '~/types/post';
+
+// Function to compile MDX content with syntax highlighting, TOC, and GFM
+const compileMDX = async (source: string) => {
+    const { code, frontmatter } = await bundleMDX({
+      source,
+      cwd: path.join(process.cwd(), 'app/posts'),
+      mdxOptions(options) {
+        options.remarkPlugins = [
+          ...(options.remarkPlugins ?? []),
+          remarkPrism,
+          [remarkToc, { heading: 'Table of contents', maxDepth: 2 }],
+          remarkGfm
+        ];
+        return options;
+      },
+    });
+  
+    return { code, frontmatter };
+  };
 
 
 const getPostFiles = () => {
@@ -14,24 +34,25 @@ const getPostFiles = () => {
 const getPostBySlug = async (slug: string): Promise<Post> => {
     const filePath = path.join(process.cwd(), 'app/posts', `${slug}.mdx`);
     const source = fs.readFileSync(filePath, 'utf8');
-
-    const { code, frontmatter } = await bundleMDX({
-        source,
-        cwd: path.join(process.cwd(), 'app/posts'),
-    });
-
+    const { code, frontmatter } = await compileMDX(source);
+  
     return {
-        frontmatter: frontmatter as PostFrontmatter,
-        code,
+      frontmatter: frontmatter as PostFrontmatter,
+      code,
     };
-};
+  };
 
 const getPosts = async (count?: number): Promise<PostFrontmatter[]> => {
     const files = getPostFiles();
 
     const posts = await Promise.all(files.map(async file => {
         const slug = file.replace(/\.mdx?$/, '');
-        const { frontmatter } = await getPostBySlug(slug);
+        const filePath = path.join(process.cwd(), 'app/posts', `${slug}.mdx`);
+        const source = fs.readFileSync(filePath, 'utf8');
+        const { frontmatter } = await bundleMDX({
+            source,
+            cwd: path.join(process.cwd(), 'app/posts'),
+        });
 
         return {
             ...frontmatter,
@@ -74,26 +95,6 @@ const sortPostsByDate = (posts: PostFrontmatter[]): PostFrontmatter[] => {
     return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 };
 
-const getRelatedPosts = async (post: PostFrontmatter): Promise<PostFrontmatter[]> => {
-    const posts = await getPosts();
-
-    const fuse = new Fuse(posts, {
-        keys: ["title", "topic", "tags"],
-    });
-
-    fuse.remove(item => item.slug === post.slug);
-
-    const query: Expression = {
-        $or: [
-            { title: post.title },
-            { topic: post.topic },
-            ...post.tags.map(tag => ({ tags: tag })),
-        ],
-    };
-
-    const queryResults = fuse.search(query).slice(0, 2);
-    return queryResults.map(result => result.item);
-};
 
 const getLatestPost = async (): Promise<PostFrontmatter> => {
     const latestPosts = await getPosts(1);
@@ -107,7 +108,6 @@ export {
     getFeaturedPosts,
     getPostsByTag,
     getPostsByTopic,
-    getRelatedPosts,
     getTags,
     getTopics,
     sortPostsByDate,
