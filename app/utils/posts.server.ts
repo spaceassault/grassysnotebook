@@ -13,29 +13,6 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 const cache: Record<string, { code: string, frontmatter: PostFrontmatter }> = {};
 
 // Function to compile MDX content with syntax highlighting, TOC, and GFM
-// const compileMDX = async (source: string, slug: string) => {
-//     if (cache[slug]) {
-//         return cache[slug];
-//     }
-//     const { code, frontmatter } = await bundleMDX({
-//       source,
-//       cwd: path.join(process.cwd(), 'app/posts'),
-//       mdxOptions(options) {
-//         options.remarkPlugins = [
-//           ...(options.remarkPlugins ?? []),
-//           remarkPrism,
-//           [remarkToc, { heading: 'Table of contents', maxDepth: 2 }],
-//           remarkGfm
-//         ];
-//         return options;
-//       },
-//     });
-
-//     cache[slug] = { code, frontmatter: frontmatter as PostFrontmatter};
-  
-//     return { code, frontmatter };
-//   };
-
 // Alternate appraoch to compile MDX content with syntax highlighting, TOC, and GFM
 const compileMDX = async (source: string, slug: string) => {
     // Check if the result is already cached

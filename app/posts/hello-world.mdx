@@ -44,6 +44,10 @@ export default defineConfig({
         remarkFrontmatter,
         remarkMdxFrontmatter,
       ],
+      rehypePlugins: [[rehypePrettyCode, {
+        theme: "one-dark-pro", // Choose your preferred theme
+        keepBackground: true, // Keep the background from the theme
+      }]],
     }),
     tsconfigPaths(),
     remix({
@@ -84,7 +88,7 @@ Then there is the 'getPostBySlug' function:
 const getPostBySlug = async (slug: string): Promise<Post> => {
     const filePath = path.join(process.cwd(), 'app/posts', `${slug}.mdx`);
     const source = fs.readFileSync(filePath, 'utf8');
-    const { code, frontmatter } = await compileMDX(source);
+    const { code, frontmatter } = await compileMDX(source, slug);
   
     return {
       frontmatter: frontmatter as PostFrontmatter,
@@ -97,22 +101,36 @@ The `getPostBySlug` function relies on the `compileMDX` function to compile the 
 
 ```typescript
 // Function to compile MDX content with syntax highlighting, TOC, and GFM
-const compileMDX = async (source: string) => {
+const compileMDX = async (source: string, slug: string) => {
+    // Check if the result is already cached
+    if (cache[slug]) {
+        return cache[slug];
+    }
+  
+    // Compile MDX with remark and rehype plugins
     const { code, frontmatter } = await bundleMDX({
       source,
       cwd: path.join(process.cwd(), 'app/posts'),
       mdxOptions(options) {
         options.remarkPlugins = [
           ...(options.remarkPlugins ?? []),
-          remarkPrism,
           [remarkToc, { heading: 'Table of contents', maxDepth: 2 }],
-          remarkGfm
+          remarkGfm,
+        ];
+        options.rehypePlugins = [
+          ...(options.rehypePlugins ?? []),
+          rehypePrism,
+          rehypeSlug,
+          [rehypeAutolinkHeadings, { behavior: 'wrap' }],
         ];
         return options;
       },
     });
   
-    return { code, frontmatter };
+    const result = { code, frontmatter };
+    cache[slug] = { code, frontmatter: frontmatter as PostFrontmatter};
+  
+    return result;
   };
   ```
 
@@ -187,6 +205,9 @@ export default function BlogPost() {
   );
 }
 ```
+
+## Tailwind configuration
+One important note is that I had to import `@import "prism-themes/themes/prism-one-dark.css";` into my tailwind.css file to get the Prism syntax highlighting to work. This is because the `prism-themes` package is not included in the Remix project by default.
 
 ## Conclusion
 I hope this post has helped you understand how I set up a blog using MDX and Remix. I have enjoyed the process of creating this blog and look forward to writing more posts in the future. If you have any questions or comments, please feel free to reach out to me on [X](https://x.com/JasonNoll4). I look forward to hearing from you!
