@@ -7,8 +7,13 @@ import remarkGfm from 'remark-gfm';
 import { bundleMDX } from 'mdx-bundler';
 import type { Post, PostFrontmatter, Tag } from '~/types/post';
 
+const cache: Record<string, { code: string, frontmatter: PostFrontmatter }> = {};
+
 // Function to compile MDX content with syntax highlighting, TOC, and GFM
-const compileMDX = async (source: string) => {
+const compileMDX = async (source: string, slug: string) => {
+    if (cache[slug]) {
+        return cache[slug];
+    }
     const { code, frontmatter } = await bundleMDX({
       source,
       cwd: path.join(process.cwd(), 'app/posts'),
@@ -22,6 +27,8 @@ const compileMDX = async (source: string) => {
         return options;
       },
     });
+
+    cache[slug] = { code, frontmatter: frontmatter as PostFrontmatter};
   
     return { code, frontmatter };
   };
@@ -34,7 +41,7 @@ const getPostFiles = () => {
 const getPostBySlug = async (slug: string): Promise<Post> => {
     const filePath = path.join(process.cwd(), 'app/posts', `${slug}.mdx`);
     const source = fs.readFileSync(filePath, 'utf8');
-    const { code, frontmatter } = await compileMDX(source);
+    const { code, frontmatter } = await compileMDX(source, slug);
   
     return {
       frontmatter: frontmatter as PostFrontmatter,
