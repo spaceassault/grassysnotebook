@@ -9,7 +9,7 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import styles from '~/tailwind.css?url'
+import tailwindStyles from '~/styles/tailwind.css?url'
 import Navbar from "./components/navbar";
 import { getThemeSession } from "~/utils/theme.server";
 import { NonFlashOfWrongThemeEls, Theme, ThemeProvider, useTheme } from "~/utils/theme-provider";
@@ -22,10 +22,12 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/remix"
 import { honeypot } from "./utils/honeypot.server";
 import { HoneypotProvider } from 'remix-utils/honeypot/react';
+import proseStyles from '~/styles/prose.css?url'
 
 // Use the links function to include the stylesheet
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: styles },
+  { rel: "stylesheet", href: tailwindStyles },
+  { rel: "stylesheet", href: proseStyles },
 ];
 
 export const meta: MetaFunction = ({ data }) => {

@@ -19,13 +19,13 @@ I wanted to take some time to write my first blog post using markdown (MDX) in R
 
 To get started, I created a new Remix project. Then, I installed the necessary packages for MDX support:
 
-```bash
+```bash lines=1
 npm install @mdx-js/rollup remark-frontmatter remark-mdx-frontmatter rehype-pretty-code
 ```
 
 Depending on your stack and needs, you may have to install slightly different packages. In my case I am using Remix.run with the vite plugin. My vite.config.ts file looks like this:
 
-```javascript
+```tsx filename=vite.config.ts lines=14-15
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { vitePlugin as remix } from '@remix-run/dev';
@@ -40,14 +40,6 @@ import { vercelPreset } from '@vercel/remix/vite';
 export default defineConfig({
   plugins: [
     mdx({
-      remarkPlugins: [
-        remarkFrontmatter,
-        remarkMdxFrontmatter,
-      ],
-      rehypePlugins: [[rehypePrettyCode, {
-        theme: "one-dark-pro", // Choose your preferred theme
-        keepBackground: true, // Keep the background from the theme
-      }]],
     }),
     tsconfigPaths(),
     remix({
@@ -99,7 +91,7 @@ const getPostBySlug = async (slug: string): Promise<Post> => {
 
 The `getPostBySlug` function relies on the `compileMDX` function to compile the MDX files and ensure they are formatted appropriately. In this function I use the [Remark TOC](https://github.com/remarkjs/remark-toc), [Remark Prism](https://github.com/sergioramos/remark-prism), and [Remark Gfm](https://github.com/remarkjs/remark-gfm) plugins to enhance the formating of my posts. The 'compileMDX' function is defined as follows:
 
-```typescript
+```tsx lines=1
 // Function to compile MDX content with syntax highlighting, TOC, and GFM
 const compileMDX = async (source: string, slug: string) => {
     // Check if the result is already cached

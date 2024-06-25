@@ -1,4 +1,4 @@
-@import "prism-themes/themes/prism-one-dark.css";
+/* @import "prism-themes/themes/prism-one-dark.css"; */
 
 @tailwind base;
 @tailwind components;
@@ -105,7 +105,7 @@
       --tw-prose-td-borders: #374151;
     }
   
-    pre {
+    /* pre {
       overflow-x: auto;
       padding: 1rem;
       background: #282c34;
@@ -133,7 +133,7 @@
       margin-right: 1rem;
       text-align: right;
       color: gray;
-    }
+    } */
   }
 
   @layer base {

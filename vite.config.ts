@@ -12,14 +12,8 @@ import { vercelPreset } from '@vercel/remix/vite';
 export default defineConfig({
   plugins: [
     mdx({
-      remarkPlugins: [
-        remarkFrontmatter,
-        remarkMdxFrontmatter,
-      ],
-      rehypePlugins: [[rehypePrettyCode, {
-        theme: "one-dark-pro", // Choose your preferred theme
-        keepBackground: true, // Keep the background from the theme
-      }]],
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+      rehypePlugins: [rehypePrettyCode],
     }),
     tsconfigPaths(),
     remix({
