@@ -32,7 +32,7 @@ export default function BlogList() {
               <p className="text-gray-700 text-base">{description}</p>
             </div>
             <div className="px-6 pt-4 pb-2">
-              <Link to={`/blog/${slug}`} prefetch="intent" className="text-blue-500 hover:text-blue-700">
+              <Link to={`/${slug}`} prefetch="intent" className="text-blue-500 hover:text-blue-700">
                 Read More
               </Link>
             </div>

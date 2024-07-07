@@ -41,14 +41,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     posts = await getPosts();
   }
 
-  const featured = await getFeaturedPosts();
-  const topics = await getTopics();
-  const lastPost = await getLatestPost();
-
-  // console.log("These are the featured posts", featured);
-  // console.log("These are the topics", topics);
-  // console.log("This is the last post", lastPost);
-  // console.log("These are the posts", posts);
+  const featured = await getFeaturedPosts(posts);
+  const topics = await getTopics(posts);
+  const lastPost = await getLatestPost(posts);
 
   return json({"posts": posts, "featured": featured, "topics": topics, "lastPost": lastPost});
 }

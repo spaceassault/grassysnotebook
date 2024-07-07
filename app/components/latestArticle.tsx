@@ -22,7 +22,7 @@ const thumbnailUrl = getThumbnailUrl(image, 1280, 720);
           <p className="text-gray-700 text-base">{post.description}</p>
         </div>
         <div className="px-6 pt-4 pb-2">
-          <Link to={`/blog/${post.slug}`} prefetch="intent" className="text-blue-500 hover:text-blue-700">
+          <Link to={`/${post.slug}`} prefetch="intent" className="text-blue-500 hover:text-blue-700">
             Read More
           </Link>
         </div>

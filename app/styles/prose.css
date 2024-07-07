@@ -120,11 +120,11 @@ pre {
 }
 
 .codeblock-line[data-highlight='true']:before {
-	border-left: 6px solid var(--base0E);
+	border-left: 6px solid var(--base03);
 }
 
 .codeblock-line[data-highlight='true']:after {
-	background: var(--base0E);
+	background: var(--base03);
 }
 
 .prose pre[data-remove] .codeblock-line[data-remove='true']:before {

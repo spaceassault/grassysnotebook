@@ -11,6 +11,7 @@ const getPostFiles = () => {
 };
 
 const getPostBySlug = async (slug: string): Promise<Post> => {
+    console.log('Getting post by slug', slug)
     const filePath = path.join(process.cwd(), 'app/posts', `${slug}.mdx`);
     const source = fs.readFileSync(filePath, 'utf8');
     const { code, frontmatter } = await compileMDX(source, slug);
@@ -22,6 +23,7 @@ const getPostBySlug = async (slug: string): Promise<Post> => {
   };
 
 const getPosts = async (count?: number): Promise<PostFrontmatter[]> => {
+    console.log('Getting posts')
     const files = getPostFiles();
 
     const posts = await Promise.all(files.map(async file => {
@@ -42,21 +44,17 @@ const getPosts = async (count?: number): Promise<PostFrontmatter[]> => {
     return count ? posts.slice(0, count) : posts;
 };
 
-const getTopics = async (): Promise<string[]> => {
-    const posts = await getPosts();
+const getTopics = (posts: PostFrontmatter[]): string[] => {
     const topics = posts.map(post => post.topic);
     return [...new Set(topics)];
-}
+};
 
-const getTags = async (): Promise<Tag[]> => {
-    const posts = await getPosts();
-
+const getTags = (posts: PostFrontmatter[]): Tag[] => {
     const duplicateTags = posts.flatMap(post => post.tags);
     return [...new Set(duplicateTags)];
 };
 
-const getFeaturedPosts = async (): Promise<PostFrontmatter[]> => {
-    const posts = await getPosts();
+const getFeaturedPosts = (posts: PostFrontmatter[]): PostFrontmatter[] => {
     return posts.filter(post => post.featured === true);
 };
 
@@ -65,8 +63,7 @@ const getPostsByTopic = async (topic: string): Promise<PostFrontmatter[]> => {
     return posts.filter(post => post.topic === topic);
 };
 
-const getPostsByTag = async (tag: string): Promise<PostFrontmatter[]> => {
-    const posts = await getPosts();
+const getPostsByTag = (posts: PostFrontmatter[], tag: string): PostFrontmatter[] => {
     return posts.filter(post => post.tags.includes(tag));
 };
 
@@ -74,10 +71,8 @@ const sortPostsByDate = (posts: PostFrontmatter[]): PostFrontmatter[] => {
     return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 };
 
-
-const getLatestPost = async (): Promise<PostFrontmatter> => {
-    const latestPosts = await getPosts(1);
-    return latestPosts[0];
+const getLatestPost = (posts: PostFrontmatter[]): PostFrontmatter => {
+    return sortPostsByDate(posts)[0];
 };
 
 export {

@@ -15,7 +15,7 @@ export default function FeaturedList() {
         const { slug, title } = post;
         return (
           <div key={slug} className="grid grid-col-1 gap-4">
-            <Link to={`/blog/${slug}`} prefetch="intent" className="text-primary text-lg lg:text-xl hover:underline">
+            <Link to={`/${slug}`} prefetch="intent" className="text-primary text-lg lg:text-xl hover:underline">
               {title}
             </Link>
             <hr className="border-primary my-4" />
