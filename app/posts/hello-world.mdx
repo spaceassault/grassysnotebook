@@ -19,13 +19,13 @@ I wanted to take some time to write my first blog post using markdown (MDX) in R
 
 To get started, I created a new Remix project. Then, I installed the necessary packages for MDX support:
 
-```bash
+```sh title="shell"
 npm install @mdx-js/rollup remark-frontmatter remark-mdx-frontmatter rehype-pretty-code
 ```
 
 Depending on your stack and needs, you may have to install slightly different packages. In my case I am using Remix.run with the vite plugin. My vite.config.ts file looks like this:
 
-```tsx filename=vite.config.ts lines=14-17
+```ts title="vite.config.ts" caption="typescript" {14-17}
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { vitePlugin as remix } from '@remix-run/dev';
@@ -70,7 +70,6 @@ This configuration file sets up the necessary plugins for MDX support out of the
 The blog post server is set up in my utils folder and is named `posts.server.ts`. This file reads the blog posts from the file system and serves them to the client. The server is set up with a few essential functions; first, there is the `getPostFiles` function:
 
 ```tsx filename=posts.server.ts
-// utils/posts.server.ts
 const getPostFiles = () => {
     return fs.readdirSync(path.join(process.cwd(), 'app/posts')).filter(file => file.endsWith('.md') || file.endsWith('.mdx'));
 };

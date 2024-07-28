@@ -23,6 +23,7 @@ import { SpeedInsights } from "@vercel/speed-insights/remix"
 import { honeypot } from "./utils/honeypot.server";
 import { HoneypotProvider } from 'remix-utils/honeypot/react';
 import proseStyles from '~/styles/prose.css?url'
+import { useNonce } from "./utils/nonce-provider";
 
 // Use the links function to include the stylesheet
 export const links: LinksFunction = () => [
@@ -61,6 +62,8 @@ export interface DocumentProps {
 
 function App({ title }: DocumentProps) {
   const data = useLoaderData<LoaderData>();
+  const nonce = useNonce();
+  console.log("nonce", nonce || "Nonce is null")
 
   const [theme] = useTheme();
 

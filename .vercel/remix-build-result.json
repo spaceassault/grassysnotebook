@@ -1,0 +1,195 @@
+{
+  "buildManifest": {
+    "serverBundles": {
+      "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0": {
+        "id": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+        "file": "build/server/nodejs-eyJydW50aW1lIjoibm9kZWpzIn0/index.js",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    },
+    "routeIdToServerBundleId": {
+      "routes/action.set-theme": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/sitemap[.]xml": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/robots[.]txt": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/about.index": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/_index": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/styles": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/$slug": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/about": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/$": "nodejs-eyJydW50aW1lIjoibm9kZWpzIn0"
+    },
+    "routes": {
+      "root": {
+        "path": "",
+        "id": "root",
+        "file": "app/root.tsx",
+        "config": {}
+      },
+      "routes/action.set-theme": {
+        "file": "app/routes/action.set-theme.tsx",
+        "id": "routes/action.set-theme",
+        "path": "action/set-theme",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/sitemap[.]xml": {
+        "file": "app/routes/sitemap[.]xml.tsx",
+        "id": "routes/sitemap[.]xml",
+        "path": "sitemap.xml",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/robots[.]txt": {
+        "file": "app/routes/robots[.]txt.ts",
+        "id": "routes/robots[.]txt",
+        "path": "robots.txt",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/about.index": {
+        "file": "app/routes/about.index.mdx",
+        "id": "routes/about.index",
+        "path": "index",
+        "parentId": "routes/about",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/_index": {
+        "file": "app/routes/_index.tsx",
+        "id": "routes/_index",
+        "index": true,
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/styles": {
+        "file": "app/routes/styles.tsx",
+        "id": "routes/styles",
+        "path": "styles",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/$slug": {
+        "file": "app/routes/$slug.tsx",
+        "id": "routes/$slug",
+        "path": ":slug",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/about": {
+        "file": "app/routes/about.tsx",
+        "id": "routes/about",
+        "path": "about",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/$": {
+        "file": "app/routes/$.tsx",
+        "id": "routes/$",
+        "path": "*",
+        "parentId": "root",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    }
+  },
+  "remixConfig": {
+    "appDirectory": "/home/space_dev/code/grassysnotebook/app",
+    "basename": "/",
+    "buildDirectory": "/home/space_dev/code/grassysnotebook/build",
+    "future": {
+      "v3_fetcherPersist": true,
+      "v3_relativeSplatPath": true,
+      "v3_throwAbortReason": true,
+      "unstable_singleFetch": false
+    },
+    "manifest": false,
+    "publicPath": "/",
+    "routes": {
+      "root": {
+        "path": "",
+        "id": "root",
+        "file": "root.tsx"
+      },
+      "routes/action.set-theme": {
+        "file": "routes/action.set-theme.tsx",
+        "id": "routes/action.set-theme",
+        "path": "action/set-theme",
+        "parentId": "root"
+      },
+      "routes/sitemap[.]xml": {
+        "file": "routes/sitemap[.]xml.tsx",
+        "id": "routes/sitemap[.]xml",
+        "path": "sitemap.xml",
+        "parentId": "root"
+      },
+      "routes/robots[.]txt": {
+        "file": "routes/robots[.]txt.ts",
+        "id": "routes/robots[.]txt",
+        "path": "robots.txt",
+        "parentId": "root"
+      },
+      "routes/about.index": {
+        "file": "routes/about.index.mdx",
+        "id": "routes/about.index",
+        "path": "index",
+        "parentId": "routes/about"
+      },
+      "routes/_index": {
+        "file": "routes/_index.tsx",
+        "id": "routes/_index",
+        "index": true,
+        "parentId": "root"
+      },
+      "routes/styles": {
+        "file": "routes/styles.tsx",
+        "id": "routes/styles",
+        "path": "styles",
+        "parentId": "root"
+      },
+      "routes/$slug": {
+        "file": "routes/$slug.tsx",
+        "id": "routes/$slug",
+        "path": ":slug",
+        "parentId": "root"
+      },
+      "routes/about": {
+        "file": "routes/about.tsx",
+        "id": "routes/about",
+        "path": "about",
+        "parentId": "root"
+      },
+      "routes/$": {
+        "file": "routes/$.tsx",
+        "id": "routes/$",
+        "path": "*",
+        "parentId": "root"
+      }
+    },
+    "serverBuildFile": "index.js",
+    "serverModuleFormat": "esm",
+    "ssr": true
+  },
+  "viteConfig": {
+    "build": {
+      "assetsDir": "assets"
+    }
+  }
+}
