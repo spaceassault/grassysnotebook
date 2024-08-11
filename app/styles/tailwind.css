@@ -104,36 +104,6 @@
       --tw-prose-th-borders: #4b5563;
       --tw-prose-td-borders: #374151;
     }
-  
-    /* pre {
-      overflow-x: auto;
-      padding: 1rem;
-      background: #282c34;
-      color: #abb2bf;
-      border-radius: 0.5rem;
-      font-size: 0.875rem;
-    }
-    code {
-      background: #1e1e1e;
-      padding: 0.2rem 0.4rem;
-      border-radius: 0.3rem;
-      font-family: Consolas, "Courier New", monospace;
-    }
-    pre [data-line] {
-      padding: 0 1rem;
-    }
-    code[data-line-numbers] {
-      counter-reset: line;
-    }
-    code[data-line-numbers] > [data-line]::before {
-      counter-increment: line;
-      content: counter(line);
-      display: inline-block;
-      width: 1rem;
-      margin-right: 1rem;
-      text-align: right;
-      color: gray;
-    } */
   }
 
   @layer base {

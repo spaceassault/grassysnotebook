@@ -6,6 +6,7 @@ description: "This is my first blog post written in MDX."
 tags: mdx, remix, blog
 topic: Programming
 author: Grassy
+version: 1.0
 featured: true
 ---
 
@@ -25,7 +26,7 @@ npm install @mdx-js/rollup remark-frontmatter remark-mdx-frontmatter rehype-pret
 
 Depending on your stack and needs, you may have to install slightly different packages. In my case I am using Remix.run with the vite plugin. My vite.config.ts file looks like this:
 
-```ts title="vite.config.ts" caption="typescript" {14-17}
+```ts title="vite.config.ts" caption="tsx" {14-17}
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { vitePlugin as remix } from '@remix-run/dev';
@@ -69,7 +70,7 @@ This configuration file sets up the necessary plugins for MDX support out of the
 ## Setting Up the Blog Posts server
 The blog post server is set up in my utils folder and is named `posts.server.ts`. This file reads the blog posts from the file system and serves them to the client. The server is set up with a few essential functions; first, there is the `getPostFiles` function:
 
-```tsx filename=posts.server.ts
+```tsx title="posts.server.ts" caption="tsx"
 const getPostFiles = () => {
     return fs.readdirSync(path.join(process.cwd(), 'app/posts')).filter(file => file.endsWith('.md') || file.endsWith('.mdx'));
 };
@@ -77,7 +78,7 @@ const getPostFiles = () => {
 
 Then there is the 'getPostBySlug' function:
 
-```tsx filename=posts.server.ts
+```tsx title="posts.server.ts" caption="tsx"
 const getPostBySlug = async (slug: string): Promise<Post> => {
     console.log('Getting post by slug', slug)
     const filePath = path.join(process.cwd(), 'app/posts', `${slug}.mdx`);
@@ -93,7 +94,7 @@ const getPostBySlug = async (slug: string): Promise<Post> => {
 
 The `getPostBySlug` function relies on the `compileMDX` function to compile the MDX files and ensure they are formatted appropriately. In this function I use the [Remark TOC](https://github.com/remarkjs/remark-toc), [Remark Prism](https://github.com/sergioramos/remark-prism), and [Remark Gfm](https://github.com/remarkjs/remark-gfm) plugins to enhance the formating of my posts. The 'compileMDX' function is defined as follows:
 
-```tsx filename=mdx-compiler.server.ts
+```tsx title="mdx-compiler.server.ts" caption="tsx"
 // Function to compile MDX content with syntax highlighting, TOC, and GFM
 const compileMDX = async (source: string, slug: string) => {
     // Check if the result is already cached
@@ -133,7 +134,7 @@ Next, I set up the `getPosts`, `getTopics`, and `getFeaturedPosts` to dynamicall
 ## Blog Route Structure
 All blog posts are stored in the `app/posts` directory. I set up a `blog.tsx` and `blog.$slug.tsx` files in the `routes` directory to handle the blog post routes. The `blog.tsx` file is used for formatting with a Remix `<Outlet>`. The `blog.$slug.tsx` file displays an individual blog post. The `blog.tsx` file is setup as follows:
 
-```typescript
+```tsx title="blog.tsx" caption="tsx"
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { Outlet, redirect } from "@remix-run/react";
 import { Breadcrumbs } from "~/components/breadcrumbs";
@@ -168,7 +169,7 @@ export default function Blog() {
 
 and the `$slug.tsx` file is setup as follows:
 
-```tsx filename=$slug.tsx
+```tsx title="blog.$slug.tsx" caption="tsx"
 import * as React from 'react';
 import { useLoaderData } from '@remix-run/react';
 import { json, LoaderFunction } from '@remix-run/node';

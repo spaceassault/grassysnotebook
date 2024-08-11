@@ -1,6 +1,7 @@
 type Post = {
     code: string
     frontmatter: PostFrontmatter
+    version: number
 }
 
 type PostFrontmatter = {
@@ -12,6 +13,7 @@ type PostFrontmatter = {
     image?: string
     description?: string
     author?: string
+    version?: number
     featured?: boolean
 }
 

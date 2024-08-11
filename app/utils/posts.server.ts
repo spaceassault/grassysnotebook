@@ -18,9 +18,24 @@ const getPostBySlug = async (slug: string): Promise<Post> => {
   
     return {
       frontmatter: frontmatter as PostFrontmatter,
+      version: frontmatter.version as number,
       code,
     };
   };
+
+const getPostVersion = async (slug: string ) => {
+    console.log('Getting post version', slug )
+    const filePath = path.join(process.cwd(), 'app/posts', `${slug}.mdx`);
+    const source = fs.readFileSync(filePath, 'utf8');
+    const { frontmatter } = await bundleMDX({
+        source,
+        cwd: path.join(process.cwd(), 'app/posts'),
+    });
+    
+    const version = frontmatter.version as number;
+
+    return version;    
+  }
 
 const getPosts = async (count?: number): Promise<PostFrontmatter[]> => {
     console.log('Getting posts')
@@ -85,5 +100,6 @@ export {
     getTags,
     getTopics,
     sortPostsByDate,
+    getPostVersion,
 };
 

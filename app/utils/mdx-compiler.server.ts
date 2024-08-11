@@ -1,10 +1,11 @@
 import path from 'path';
 import remarkGfm from 'remark-gfm';
-import rehypePrettyCode from 'rehype-pretty-code';
+import { default as rehypePrettyCode } from 'rehype-pretty-code';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { bundleMDX } from 'mdx-bundler';
 import type { PostFrontmatter } from '~/types/post';
+import remarkTOC from 'remark-toc';
 
 interface Options {
   grid?: boolean;
@@ -50,7 +51,7 @@ const rehypePrettyCodeOptions: Options = {
   },
   onVisitCode(node, language) {
 	if (language) {
-	  node.properties.className = (node.properties.className || []).concat(`language-${language}`);
+	node.properties.className = (node.properties.className || []).concat(`language-${language}`);
 	}
   },
 };
@@ -59,10 +60,10 @@ const compileMDX = async (source: string, slug: string) => {
   console.log(`Compiling MDX ${slug}`);
   const timerLabel = `MDX Compilation for ${slug} - ${Date.now()}`;
 
-//   if (cache[slug]) {
-//     console.log(`Cache found for route ${slug}`);
-//     return cache[slug];
-//   }
+  if (cache[slug]) {
+    console.log(`Cache found for route ${slug}`);
+    return cache[slug];
+  }
 
   console.log(`Cache not found, compiling route`);
   console.log(`Compiling MDX for slug: ${slug}, cwd: ${path.join(process.cwd(), 'app/posts')}`);
@@ -75,6 +76,7 @@ const compileMDX = async (source: string, slug: string) => {
     mdxOptions(options) {
       options.remarkPlugins = [
         ...(options.remarkPlugins ?? []),
+		remarkTOC,
         remarkGfm,
       ];
       options.rehypePlugins = [

@@ -2,17 +2,24 @@ import * as React from 'react';
 import { useLoaderData } from '@remix-run/react';
 import { json, LoaderFunction } from '@remix-run/node';
 import { getMDXComponent } from 'mdx-bundler/client';
-import { getPostBySlug } from '~/utils/posts.server';
+import { getPostBySlug, getPostVersion } from '~/utils/posts.server';
 import { Post } from '~/types/post';
 import { Breadcrumbs } from '~/components/breadcrumbs';
+import { getCachedMDXPage } from '~/utils/mdx-cache-manager.server';
 
 export const loader: LoaderFunction = async ({ params }) => {
+  const slug = params.slug as string;
   console.log('Loading post', params.slug);
-  const post = await getPostBySlug(params.slug as string);
-  if (!post) {
-    return json({ message: 'Post not found' }, { status: 404 });
+  const postVersion = await getPostVersion(params.slug as string );
+  console.log('Post version', postVersion);
+
+  const cachedPost = await getCachedMDXPage(slug as string, postVersion as number);
+
+  if (!cachedPost) {
+    throw new Response('Post not found', { status: 404 });
   }
-  return json(post);
+  
+  return json(cachedPost);
 };
 
 export default function BlogPost() {

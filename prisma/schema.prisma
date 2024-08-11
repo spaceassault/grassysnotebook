@@ -21,3 +21,14 @@ model Newsletter {
   email       String @unique
   isSubscribed Boolean @default(true)
 }
+
+model CachedBlogPage {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  frontMatter Json?      
+  code        String ?  //renamed content to code
+  version     Int
+  updatedAt   DateTime @updatedAt
+}
+
+
