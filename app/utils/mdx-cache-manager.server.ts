@@ -32,9 +32,12 @@ export async function cacheMDXPage(slug: string, code: string, frontMatter: Post
 }
 
 export async function compileAndCacheMDXPage(slug: string, filePath: string) {
+  console.log('Compiling and caching MDX page', slug);
   const source = await fs.readFile(filePath, 'utf-8');
   const { code, frontmatter} = await compileMDX(source, slug);
   const version = frontmatter.version;
+  console.log('MDX Page version', version); 
+  console.log('Caching MDX page', slug);
   await cacheMDXPage(slug, code, frontmatter as PostFrontmatter, version);
   return code;
 }

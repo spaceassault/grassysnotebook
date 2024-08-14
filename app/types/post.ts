@@ -9,7 +9,7 @@ type PostFrontmatter = {
     topic: string
     title: string
     slug: string
-    tags: Tag[]
+    tags?: Tag[]
     image?: string
     description?: string
     author?: string

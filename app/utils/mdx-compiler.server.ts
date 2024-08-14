@@ -24,7 +24,7 @@ interface Options {
   onVisitCode?(element: any, language: string): void;
 }
 
-const cache: Record<string, { code: string, frontmatter: PostFrontmatter }> = {};
+const cache: Record<string, { code: string, frontmatter: PostFrontmatter, version: number }> = {};
 
 const rehypePrettyCodeOptions: Options = {
   theme: 'one-dark-pro',
@@ -56,14 +56,14 @@ const rehypePrettyCodeOptions: Options = {
   },
 };
 
-const compileMDX = async (source: string, slug: string) => {
+const compileMDX = async (source: string, slug: string ) => {
   console.log(`Compiling MDX ${slug}`);
   const timerLabel = `MDX Compilation for ${slug} - ${Date.now()}`;
 
-  if (cache[slug]) {
-    console.log(`Cache found for route ${slug}`);
-    return cache[slug];
-  }
+  // if (cache[slug]) {
+  //   console.log(`Cache found for route ${slug}`);
+  //   return cache[slug];
+  // }
 
   console.log(`Cache not found, compiling route`);
   console.log(`Compiling MDX for slug: ${slug}, cwd: ${path.join(process.cwd(), 'app/posts')}`);
@@ -92,7 +92,7 @@ const compileMDX = async (source: string, slug: string) => {
   console.log('MDX Compilation Success:');
 
   const result = { code, frontmatter };
-  cache[slug] = { code, frontmatter: frontmatter as PostFrontmatter };
+  // cache[slug] = { code, frontmatter: frontmatter as PostFrontmatter, version: frontmatter.version as number };
 
   console.timeEnd(timerLabel);
 

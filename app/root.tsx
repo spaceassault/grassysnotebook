@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useLocation,
   useRouteError,
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
@@ -66,6 +67,30 @@ function App({ title }: DocumentProps) {
   console.log("nonce", nonce || "Nonce is null")
 
   const [theme] = useTheme();
+  const location = useLocation();
+
+  // Skip layout for the chart route
+  if (location.pathname.startsWith("/calculators/")) {
+    return (
+      <html lang="en" className={clsx(theme)}>
+      <head>
+        {title && <title>{title}</title>}
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+        <NonFlashOfWrongThemeEls ssrTheme={Boolean(data.theme)} />
+      </head>
+      <body className="bg-background min-w-full min-h-full">
+        <Analytics />
+        <SpeedInsights />
+        <Outlet />
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+    );
+  }
 
   return (
     <html lang="en" className={clsx(theme)}>
