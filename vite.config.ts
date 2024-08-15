@@ -15,7 +15,7 @@ import remarkTOC from 'remark-toc';
 export default defineConfig({
   plugins: [
     mdx({
-      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm, remarkMath, remarkTOC],
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter ],
       rehypePlugins: [rehypePrettyCode],
     }),
     tsconfigPaths(),
