@@ -1,3 +1,4 @@
+import * as React from "react"
 import { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { Label } from './ui/label';
@@ -5,33 +6,59 @@ import { Input } from './ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from './ui/card';
 import { ChartConfig, ChartContainer, ChartTooltipContent, ChartLegendContent } from './ui/chart';
 import { Button } from './ui/button';
+import { Combobox } from './ui/combobox';
 
 interface ChartDataItem {
     month: number;
     principal: string;
+    contributions: string;
     interest: string;
     total: string;
   }
+
+  const frequencies = [
+    { label: "Daily", value: "365" },
+    { label: "Monthly", value: "12" },
+    { label: "Quarterly", value: "4" },
+    { label: "Semi-Annual", value: "2" },
+    { label: "Annual", value: "1" },
+  ] as const
   
   export default function CompoundInterestChart() {
     const [initialAmount, setInitialAmount] = useState(1000);
+    const [recurringContribution, setContributionInvestment] = useState(100);
+    const [contributionFrequency, setContributionFrequency] = useState(frequencies[1].value);
     const [apr, setApr] = useState(5);
-    const [frequency, setFrequency] = useState(12);
+    const [frequency, setFrequency] = useState(frequencies[1].value);
     const [period, setPeriod] = useState(10);
     const [chartData, setData] = useState<ChartDataItem[]>([]);
     const [totalAccrued, setTotalAccrued] = useState<string | null>(null);
   
     const calculateCompoundInterest = () => {
       const rate = apr / 100; // Convert APR from percentage to a decimal
+      const n = Number(frequency); // Compounding frequency per year
+      const t = Number(period); // Time in years
+      const k = Number(contributionFrequency); // Contribution frequency per year
+      const C = recurringContribution; // Contribution amount
+      const P = initialAmount; // Initial principal
+
+      let totalContributions: number = 0;
       const result: ChartDataItem[] = [];
-      const principal = initialAmount;
-  
-      for (let year = 1; year <= period; year++) {
-        const A = principal * Math.pow(1 + rate / frequency, frequency * year);
-        const interest = A - principal;
+
+      for (let year = 1; year <= t; year++) {
+          const contributionTotal = C * k;
+          totalContributions += contributionTotal;
+
+          const compoundInterest = P * Math.pow(1 + rate / n, n * year);
+          const contributionInterest = (C * ((Math.pow(1 + rate / n, n * year) - 1) / (rate / n))) * (n / k);
+
+          const A = compoundInterest + contributionInterest;
+          const interest = A - (P + totalContributions);
+
         result.push({
           month: year * frequency,  // Representing total number of months
-          principal: principal.toFixed(2),
+          contributions: totalContributions.toFixed(2),
+          principal: P.toFixed(2),
           interest: interest.toFixed(2),
           total: A.toFixed(2),
         });
@@ -53,18 +80,22 @@ interface ChartDataItem {
           label: "Interest",
           color: "hsl(var(--chart-2))",
         },
+        contributions: {
+          label: "Contributions",
+          color: "hsl(var(--chart-3))",
+        },
       } satisfies ChartConfig;
 
   return (
-    <Card >
+    <Card className="w-full flex flex-col p-2 m-2 overflow-hidden">
       <CardHeader className='flex flex-col md:flex-row md:flex-wrap'>
         <div >
         <CardTitle>Compound Interest Calculator</CardTitle>
         <CardDescription className='hidden md:flex'>Visualizing the growth of your investment over time</CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="flex flex-col md:flex-row">
-        <div className="flex gap- mt-2">
+      <CardContent className="flex flex-col md:flex-row flex-grow overflow-hidden">
+        <div className="flex mt-2">
             <div className="flex flex-row flex-wrap md:flex-col">
                 <Label htmlFor="initialAmount" className="py-2">Initial Amount</Label>
                 <Input
@@ -72,6 +103,22 @@ interface ChartDataItem {
                 value={initialAmount}
                 onChange={(event) => setInitialAmount(Number(event.target.value))}
                 placeholder="Initial Amount"
+                />
+                <Label htmlFor="recuringContribution" className="py-2">Recuring Contribution</Label>
+                <Input
+                type="number"
+                value={recurringContribution}
+                onChange={(event) => setContributionInvestment(Number(event.target.value))}
+                placeholder="Recuring Contribution"
+                />
+                <Label htmlFor="contributionfrequency" className="py-2">Contribution Frequency</Label>
+                <Combobox options={frequencies} selectedValue={contributionFrequency} onSelectValue={setContributionFrequency} />
+                <Input
+                type="number"
+                value={contributionFrequency}
+                onChange={(event) => setContributionFrequency(Number(event.target.value))}
+                placeholder="Contribution Frequency"
+                className="hidden"
                 />
                 <Label htmlFor="apr" className="py-2">APR (%)</Label>
                 <Input
@@ -81,11 +128,13 @@ interface ChartDataItem {
                 placeholder="APR (%)"
                 />
                 <Label htmlFor="frequency" className="py-2">Compounding Frequency</Label>
+                <Combobox options={frequencies} selectedValue={frequency} onSelectValue={setFrequency} />
                 <Input
                 type="number"
                 value={frequency}
                 onChange={(event) => setFrequency(Number(event.target.value))}
                 placeholder="Compounding Frequency"
+                className="hidden"
                 />
                 <Label htmlFor="period" className="py-2">Period (Years)</Label>
                 <Input
@@ -97,7 +146,7 @@ interface ChartDataItem {
                 <Button onClick={calculateCompoundInterest} className="mt-2 py-2">Calculate</Button>
             </div>
         </div>
-        <ChartContainer config={chartConfig} className="min-h-[300px] max-h-[700px] w-full m-2">
+        <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[550px] w-full flex-grow m-2">
             <div className="flex justify-center w-full">
             <CardTitle className="text-2xl">Total Balance ${totalAccrued}</CardTitle>
             </div>
@@ -114,18 +163,19 @@ interface ChartDataItem {
             <Tooltip content={<ChartTooltipContent hideLabel />} />
             <Legend content={<ChartLegendContent />} />
             <Bar dataKey="principal" stackId="a" fill="var(--color-principal)" radius={[0, 0, 4, 4]} />
+            <Bar dataKey="contributions" stackId="a" fill="var(--color-contributions)" radius={[4, 4, 0, 0]} />
             <Bar dataKey="interest" stackId="a" fill="var(--color-interest)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="hidden md:flex flex-col items-start gap-2 text-sm">
+      {/* <CardFooter className="hidden md:flex flex-col items-start gap-1 text-sm">
         <div className="flex gap-2 font-medium leading-none">
           Review your investment growth over time.
         </div>
         <div className="leading-none text-muted-foreground">
           This chart shows the accumulated interest and principal over the investment period.
         </div>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 }

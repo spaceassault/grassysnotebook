@@ -6,6 +6,8 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { bundleMDX } from 'mdx-bundler';
 import type { PostFrontmatter } from '~/types/post';
 import remarkTOC from 'remark-toc';
+import remarkMath from 'remark-math';
+import rehypeMathjax from 'rehype-mathjax';
 
 interface Options {
   grid?: boolean;
@@ -76,12 +78,14 @@ const compileMDX = async (source: string, slug: string ) => {
     mdxOptions(options) {
       options.remarkPlugins = [
         ...(options.remarkPlugins ?? []),
-		remarkTOC,
+		    remarkTOC,
         remarkGfm,
+        remarkMath,
       ];
       options.rehypePlugins = [
         ...(options.rehypePlugins ?? []),
         rehypeSlug,
+        rehypeMathjax,
         [rehypePrettyCode, rehypePrettyCodeOptions],
         [rehypeAutolinkHeadings, { behavior: 'wrap' }],
       ];

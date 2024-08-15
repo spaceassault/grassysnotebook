@@ -8,11 +8,14 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { default as rehypePrettyCode } from "rehype-pretty-code";
 import { vercelPreset } from '@vercel/remix/vite';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import remarkTOC from 'remark-toc';
 
 export default defineConfig({
   plugins: [
     mdx({
-      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm, remarkMath, remarkTOC],
       rehypePlugins: [rehypePrettyCode],
     }),
     tsconfigPaths(),

@@ -11,7 +11,7 @@ export default function Compound() {
       }
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col m-2">
             <div className="flex-grow items-center justify-center">
             <CompoundInterestChart />
             </div>
