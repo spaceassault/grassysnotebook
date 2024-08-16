@@ -10,10 +10,10 @@ import { Combobox } from './ui/combobox';
 
 interface ChartDataItem {
     month: number;
-    principal: string;
-    contributions: string;
-    interest: string;
-    total: string;
+    principal: number;
+    contributions: number;
+    interest: number;
+    total: number;
   }
 
   const frequencies = [
@@ -50,25 +50,26 @@ interface ChartDataItem {
           totalContributions += contributionTotal;
 
           const compoundInterest = P * Math.pow(1 + rate / n, n * year);
-          const contributionInterest = (C * ((Math.pow(1 + rate / n, n * year) - 1) / (rate / n))) * (n / k);
+          const contributionInterest = (C * ((Math.pow(1 + rate / k, k * year) - 1) / (rate / k)));
 
           const A = compoundInterest + contributionInterest;
           const interest = A - (P + totalContributions);
 
-        result.push({
-          month: year * frequency,  // Representing total number of months
-          contributions: totalContributions.toFixed(2),
-          principal: P.toFixed(2),
-          interest: interest.toFixed(2),
-          total: A.toFixed(2),
+          result.push({
+            month: year * frequency,
+            contributions: parseFloat(totalContributions.toFixed(2)),
+            principal: parseFloat(P.toFixed(2)),
+            interest: parseFloat(interest.toFixed(2)),
+            total: parseFloat(A.toFixed(2)),
         });
       }
   
       setData(result);
   
       // Extract the total from the last period
+
       const finalTotal = result.length > 0 ? result[result.length - 1].total : null;
-      setTotalAccrued(finalTotal);
+      setTotalAccrued(finalTotal ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(finalTotal) : null);
     };
 
     const chartConfig = {
@@ -107,8 +108,8 @@ interface ChartDataItem {
                 <Label htmlFor="recuringContribution" className="py-2">Recuring Contribution</Label>
                 <Input
                 type="number"
-                value={recurringContribution}
-                onChange={(event) => setContributionInvestment(Number(event.target.value))}
+                value={recurringContribution !== null ? recurringContribution.toString() : ''}
+                onChange={(event) => setContributionInvestment(parseFloat(event.target.value) || 0)}
                 placeholder="Recuring Contribution"
                 />
                 <Label htmlFor="contributionfrequency" className="py-2">Contribution Frequency</Label>
@@ -148,7 +149,7 @@ interface ChartDataItem {
         </div>
         <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[550px] w-full flex-grow m-2">
             <div className="flex justify-center w-full">
-            <CardTitle className="text-2xl">Total Balance ${totalAccrued}</CardTitle>
+            <CardTitle className="text-2xl">Total Balance {totalAccrued}</CardTitle>
             </div>
           <BarChart data={chartData}>
             <CartesianGrid vertical={false} />
