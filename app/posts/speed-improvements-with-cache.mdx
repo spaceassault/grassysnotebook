@@ -1,26 +1,91 @@
 ---
 title: Improving Compile Speeds
 date: 2024-08-10
-image: "https://res.cloudinary.com/djjxx8zcu/image/upload/v1718469988/Grassys%20Notebook/Posts/MDX_Blog_post_qg8hqj.webp"
+image: "https://res.cloudinary.com/djjxx8zcu/image/upload/v1723771048/Grassys%20Notebook/Posts/improving-database-speeds_wsacbg.webp"
 description: My original implementation of compiling MDX at load time resulted in slow client-side performance. I decided to implement a database cache system to improve performance.
 tags: ["remix", "blog", "performance"]
 topic: Programming
 author: Grassy Noll
-version: 2
+version: 1
 featured: true
 ---
 
+# Problem
+My original setup, as described in [[MDX Blog Post]], was to compile MDX at load time. This resulted in slow client-side performance. I needed to find a way to improve the compile speeds.
+
 # Approach
-This is my first blog post using MDX in Remix. Isn't this awesome?
-
-## Cache Manager
-
+I decided to implement a database cache system to improve performance. I created a cache manager and a loader function to handle the caching.
 
 ## Loader Function
+First I updated the loader function in my `app/routes/$slug.tsx` file to check the post version number. If the version number of the post and the version number in the database match, the loader function will return the cached post. If the version numbers do not match, the loader function will compile the MDX and update the cache.
 
+```tsx title="app/routes/$slug.tsx" caption="tsx"
+export const loader: LoaderFunction = async ({ params }) => {
+  const slug = params.slug as string;
+  console.log('Loading post', params.slug);
+  const postVersion = await getPostVersion(params.slug as string );
+  console.log('Post version', postVersion);
 
+  const cachedPost = await getCachedMDXPage(slug as string, postVersion as number);
 
-```javascript
-console.log("Hello, world!");
+  if (!cachedPost) {
+    throw new Response('Post not found', { status: 404 });
+  }
+  
+  return json(cachedPost);
+};
 ```
+
+
+## Cache Manager
+Next, I created a cache manager to handle the caching of the MDX pages. The cache manager is responsible for storing and retrieving the cached MDX pages from the database.
+
+```tsx title="app/utils/mdx-cache-manger.server.ts" caption="tsx"
+import { PrismaClient } from '@prisma/client';
+import fs from 'fs/promises';
+import path from 'path';
+import { compileMDX } from './mdx-compiler.server' // Replace with your MDX compiler
+import { PostFrontmatter } from '~/types/post';
+
+const prisma = new PrismaClient();
+
+// this function gets the cached mdx page and checks the version number
+// if the version number is the same as the version number in the database, it returns the cached page
+// if it doesn't exist or the version number is different it runs the cachedMDXPage function
+export async function getCachedMDXPage(slug: string, version: number) {
+  const cachedPage = await prisma.cachedBlogPage.findUnique({ where: { slug } });
+
+  if (cachedPage && cachedPage.version === version) {
+    return {
+      code: cachedPage.code,
+      frontmatter: cachedPage.frontMatter,
+      version: cachedPage.version,
+      };
+  } else {
+    return compileAndCacheMDXPage(slug, path.join(process.cwd(), 'app/posts', `${slug}.mdx`));
+  }
+}
+
+export async function cacheMDXPage(slug: string, code: string, frontMatter: PostFrontmatter, version: number) {
+  return prisma.cachedBlogPage.upsert({
+    where: { slug },
+    update: { code, frontMatter, version },
+    create: { slug, frontMatter, code, version },
+  });
+}
+
+export async function compileAndCacheMDXPage(slug: string, filePath: string) {
+  console.log('Compiling and caching MDX page', slug);
+  const source = await fs.readFile(filePath, 'utf-8');
+  const { code, frontmatter} = await compileMDX(source, slug);
+  const version = frontmatter.version;
+  console.log('MDX Page version', version); 
+  console.log('Caching MDX page', slug);
+  await cacheMDXPage(slug, code, frontmatter as PostFrontmatter, version);
+  return code;
+}
+```
+
+# Results
+After implementing the cache system, the compile speeds of my MDX pages improved significantly. The client-side performance is now in the tens of milliseconds vice the seconds it was before. I am very happy with the results and will continue to monitor the performance of my site. I still need to tackle connection issues with my database due to "cold starts" and uploading posts without having to re-build my entire project. I will continue to work on these issues in the future and update you on my progress.
 
