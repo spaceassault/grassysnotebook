@@ -13,9 +13,11 @@ const thumbnailUrl = getThumbnailUrl(image, 1280, 720);
   return (
     <div className="flex flex-col lg:gap-6">
       <Card key={post.slug} className="mt-4 p-4 rounded overflow-hidden">
+        <Link to={`/${post.slug}`} prefetch="intent">
         <AspectRatio ratio={16 / 9}>
           <img className="rounded-md object-cover" src={thumbnailUrl} alt={post.title} />
         </AspectRatio>
+        </Link >
         <div className="px-6 py-4">
           <div className="font-bold text-2xl mb-2">{post.title}</div>
           <p className="text-gray-500 text-sm">{new Date(post.date).toLocaleDateString()}</p>

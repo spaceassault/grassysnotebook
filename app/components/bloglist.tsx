@@ -23,9 +23,11 @@ export default function BlogList() {
         const thumbnailUrl = getThumbnailUrl(image, 1280, 720);
         return (
           <Card key={slug} className="mt-4 p-4 rounded overflow-hidden">
+            <Link to={`/${slug}`} prefetch="intent">
             <AspectRatio ratio={16 / 9}>
               <img className="rounded-md object-cover" src={thumbnailUrl} alt={title} />
             </AspectRatio>
+            </Link>
             <div className="px-6 py-4">
               <div className="font-bold text-2xl mb-2">{title}</div>
               <p className="text-gray-500 text-sm">{new Date(date).toLocaleDateString()}</p>
