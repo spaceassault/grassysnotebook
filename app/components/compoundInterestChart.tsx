@@ -88,7 +88,7 @@ interface ChartDataItem {
       } satisfies ChartConfig;
 
   return (
-    <Card className="w-full flex flex-col p-2 m-2 overflow-hidden">
+    <Card className="w-full flex flex-col p-1 md:p-2 overflow-hidden">
       <CardHeader className='flex flex-col md:flex-row md:flex-wrap'>
         <div >
         <CardTitle>Compound Interest Calculator</CardTitle>
@@ -96,7 +96,7 @@ interface ChartDataItem {
         </div>
       </CardHeader>
       <CardContent className="flex flex-col md:flex-row flex-grow overflow-hidden">
-        <div className="flex mt-2">
+        <div className="flex m-1 md:mt-2">
             <div className="flex flex-row flex-wrap md:flex-col">
                 <Label htmlFor="initialAmount" className="py-2">Initial Amount</Label>
                 <Input
@@ -147,8 +147,8 @@ interface ChartDataItem {
                 <Button onClick={calculateCompoundInterest} className="mt-2 py-2">Calculate</Button>
             </div>
         </div>
-        <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[550px] w-full flex-grow m-2">
-            <div className="flex justify-center w-full">
+        <ChartContainer config={chartConfig} className="min-h-[350px] max-h-[550px] w-full flex-grow md:m-2">
+            <div className="flex justify-center w-full mb-1">
             <CardTitle className="text-2xl">Total Balance {totalAccrued}</CardTitle>
             </div>
           <BarChart data={chartData}>
