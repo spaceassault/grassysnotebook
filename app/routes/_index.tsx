@@ -100,7 +100,16 @@ export default function Index() {
     <div className="flex flex-col flex-1 sm:container max-w-full mt-4 px-6">
       <div className="md:grid md:grid-cols-12">
         <div className="md:col-span-8">
-          <Suspense fallback={<Skeleton className="w-full h-64" />}>
+          <Suspense fallback=
+          {
+            <div className="flex flex-col space-y-3">
+              <Skeleton className="w-full h-64 rounded-xl" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                </div>
+            </div>
+            }>
             <Await resolve={data.indexData}>
               {({ latestPost, posts }) => (
                 <>
@@ -112,7 +121,14 @@ export default function Index() {
           </Suspense>
         </div>
         <div className="flex flex-col md:col-span-4 md:col-start-10 mt-4">
-          <Suspense fallback={<Skeleton className="w-full h-64" />}>
+          <Suspense fallback={
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+              </div>
+            }>
             <Await resolve={data.indexData}>
               {({ featuredPosts, topics }) => (
                 <>

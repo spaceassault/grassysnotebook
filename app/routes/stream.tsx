@@ -12,7 +12,15 @@ export default function Stream() {
     const data = useLoaderData<typeof loader>();
 
     return (
-        <React.Suspense fallback={<Skeleton className="w-full h-64" />}> 
+        <React.Suspense fallback={
+            <div className="flex flex-col space-y-3">
+            <Skeleton className="w-full h-64 rounded-xl" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+              </div>
+          </div>
+        }> 
             <Await resolve={data.delayedData}>
                 {loadedData => <div>{loadedData}</div>}
             </Await>
