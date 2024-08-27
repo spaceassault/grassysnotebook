@@ -1,8 +1,6 @@
-import { Link, useLoaderData } from "@remix-run/react";
-import { PostFrontmatter } from "~/types/post";
+import { Link } from "@remix-run/react";
 
-export default function FeaturedList() {
-  const { featured } = useLoaderData<{featured: PostFrontmatter}>();
+export default function FeaturedList({ featured }: { featured: { slug: string; title: string }[] }) {
 
   if (!Array.isArray(featured) || featured.length === 0) {
     return <div>No featured articles found.</div>;
@@ -15,7 +13,7 @@ export default function FeaturedList() {
         const { slug, title } = post;
         return (
           <div key={slug} className="grid grid-col-1 gap-4">
-            <Link to={`/${slug}`} prefetch="intent" className="text-primary text-lg lg:text-xl hover:underline">
+            <Link to={`/${slug}`} prefetch="intent"  className="text-primary text-lg lg:text-xl hover:underline" unstable_viewTransition>
               {title}
             </Link>
             <hr className="border-primary my-4" />

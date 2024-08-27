@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "@remix-run/react";
+import { PostFrontmatter } from "~/types/post";
 
-export default function BlogCategories() {
-    const topics = useLoaderData<{topics: string[]}>().topics;
+export default function BlogCategories({ topics }: { topics: string[] }) {
 
     if (!Array.isArray(topics) || topics.length === 0) {
         return <div>No featured articles found.</div>;
@@ -18,7 +18,7 @@ export default function BlogCategories() {
                 const name = post;
                 return (
                 <div key={name} className="grid grid-col-1 gap-4">
-                    <Link to={`/?category=${name}`} prefetch="intent" className="text-primary text-lg lg:text-xl hover:underline">
+                    <Link to={`/?category=${name}`} prefetch="intent" className="text-primary text-lg lg:text-xl hover:underline" unstable_viewTransition>
                     {name}
                     </Link>
                     <hr className="border-primary my-4" />

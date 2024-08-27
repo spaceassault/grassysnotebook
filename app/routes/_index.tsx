@@ -1,20 +1,20 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import FeaturedList from "~/components/featuredlist";
 import BlogList from "~/components/bloglist";
-import { getFeaturedPosts, getLatestPost, getPosts, getPostsByTopic, getTopics } from "~/utils/posts.server";
-import { Form, json, useActionData } from "@remix-run/react";
+import { getIndexPageData } from "~/utils/posts.server";
+import { Await, defer, Form, json, useActionData, useLoaderData } from "@remix-run/react";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { z } from "zod";
 import { parseWithZod, getZodConstraint } from '@conform-to/zod';
 import { useForm } from '@conform-to/react';
 import { prisma } from "~/utils/prisma.server";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import BlogCategories from "~/components/blogCategories";
 import LatestArticle from "~/components/latestArticle";
-import type { PostFrontmatter } from "~/types/post";
 import { HoneypotInputs } from "remix-utils/honeypot/react";
 import { honeypot } from "~/utils/honeypot.server";
+import { Skeleton } from "~/components/ui/skeleton";
 
 //zod schema for newsletter signup
 const schema = z.object({
@@ -30,23 +30,20 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const category = url.searchParams.get("category");
-
-  let posts: PostFrontmatter[] = [];
-  if (category) {
-    posts = await getPostsByTopic(category);
-  } else {
-    posts = await getPosts();
+  const category = url.searchParams.get("category") || undefined;
+  if (!category) {
+    console.log('No category');
   }
 
-  const featured = await getFeaturedPosts(posts);
-  const topics = await getTopics(posts);
-  const lastPost = await getLatestPost(posts);
+  return defer({
+    indexData: getIndexPageData(category),  // Do not await
+  });
 
-  return json({"posts": posts, "featured": featured, "topics": topics, "lastPost": lastPost});
 }
+
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -86,9 +83,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   };
 
 export default function Index() {
-  // const { posts, topics, featured } = useLoaderData<{ posts: Post[], topics: string[], featured: string[] }>();
   const lastResult = useActionData<typeof action>();
-
+  const data = useLoaderData<typeof loader>();
+  
 	const [form, fields] = useForm({
 		lastResult,
 		constraint: getZodConstraint(schema),
@@ -103,18 +100,34 @@ export default function Index() {
     <div className="flex flex-col flex-1 sm:container max-w-full mt-4 px-6">
       <div className="md:grid md:grid-cols-12">
         <div className="md:col-span-8">
-          <LatestArticle />
-          <BlogList />
+          <Suspense fallback={<Skeleton className="w-full h-64" />}>
+            <Await resolve={data.indexData}>
+              {({ latestPost, posts }) => (
+                <>
+                  <LatestArticle post={latestPost} />
+                  <BlogList posts={posts} />
+                </>
+              )}
+            </Await>
+          </Suspense>
         </div>
         <div className="flex flex-col md:col-span-4 md:col-start-10 mt-4">
-          <FeaturedList />
-          <BlogCategories />
+          <Suspense fallback={<Skeleton className="w-full h-64" />}>
+            <Await resolve={data.indexData}>
+              {({ featuredPosts, topics }) => (
+                <>
+                  <FeaturedList featured={featuredPosts} />
+                  <BlogCategories topics={topics} />
+                </>
+              )}
+            </Await>
+          </Suspense>
           <div className="mt-8">
             <h1 className="text-3xl text-primary font-bold py-4">Sign Up For My Newsletter</h1>
             <p className="text-primary py-2">Be the first to learn about new articles and website updates</p>
             <Form method="POST" className="flex flex-col py-2" id={form.id}>
               <HoneypotInputs />
-              <Input id={fields.email.id} name={fields.email.name} type="email" placeholder="Email" className="p-2" required/>
+              <Input id={fields.email.id} name={fields.email.name} type="email" placeholder="Email" className="p-2" required />
               <div id={fields.email.errorId} className="text-destructive">{fields.email.errors}</div>
               {(lastResult as { success: boolean; error: ReactNode })?.success === false && (
                 <div className="text-destructive mt-2">
@@ -128,9 +141,10 @@ export default function Index() {
               )}
               <Button type="submit" className="mt-2 py-2">Sign Up</Button>
             </Form>
-        </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+

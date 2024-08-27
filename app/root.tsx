@@ -1,6 +1,7 @@
 import {
   isRouteErrorResponse,
   Links,
+  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -24,7 +25,7 @@ import { SpeedInsights } from "@vercel/speed-insights/remix"
 import { honeypot } from "./utils/honeypot.server";
 import { HoneypotProvider } from 'remix-utils/honeypot/react';
 import proseStyles from '~/styles/prose.css?url'
-import { useNonce } from "./utils/nonce-provider";
+import { generateNonce } from "./utils/nonce-provider.server";
 
 // Use the links function to include the stylesheet
 export const links: LinksFunction = () => [
@@ -39,9 +40,12 @@ export const meta: MetaFunction = ({ data }) => {
 	]
 }
 
-export type LoaderData = {
-  theme: Theme | null;
-  honeyProps: ReturnType<typeof honeypot.getInputProps>;
+export interface LoaderData {
+  data: {
+    theme: Theme | null;
+    honeyProps: ReturnType<typeof honeypot.getInputProps>;
+  }
+  nonce: string;
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -49,8 +53,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const honeyProps = honeypot.getInputProps()
 
   const data: LoaderData = {
+    data: {
     theme: themeSession.getTheme(),
     honeyProps,
+    },
+    nonce: generateNonce(),
   };
 
   return data;
@@ -61,9 +68,11 @@ export interface DocumentProps {
   children?: ReactNode;
 }
 
+const nonce = "secretnoncevalue";
+
 function App({ title }: DocumentProps) {
-  const data = useLoaderData<LoaderData>();
-  const nonce = useNonce();
+  const data = useLoaderData<LoaderData>().data;
+  // const nonce = useLoaderData<LoaderData>().nonce;
   console.log("nonce", nonce || "Nonce is null")
 
   const [theme] = useTheme();
@@ -85,8 +94,9 @@ function App({ title }: DocumentProps) {
         <Analytics />
         <SpeedInsights />
         <Outlet />
-        <ScrollRestoration />
-        <Scripts />
+        <ScrollRestoration nonce={nonce}/>
+        <Scripts nonce={nonce}/>
+        <LiveReload nonce={nonce}/>
       </body>
     </html>
     );
@@ -117,7 +127,7 @@ function App({ title }: DocumentProps) {
 }
 
 export default function AppWithProviders() {
-  const data = useLoaderData<LoaderData>();
+  const data = useLoaderData<LoaderData>().data;
 
   return (
     <HoneypotProvider {...data.honeyProps}>

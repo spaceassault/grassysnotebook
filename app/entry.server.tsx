@@ -14,6 +14,8 @@ import { renderToPipeableStream } from "react-dom/server";
 
 const ABORT_DELAY = 5_000;
 
+const NONCE = "secretnoncevalue";
+
 export default function handleRequest(
   request: Request,
   responseStatusCode: number,
@@ -54,6 +56,7 @@ function handleBotRequest(
         abortDelay={ABORT_DELAY}
       />,
       {
+        nonce: NONCE,
         onAllReady() {
           shellRendered = true;
           const body = new PassThrough();
@@ -104,6 +107,7 @@ function handleBrowserRequest(
         abortDelay={ABORT_DELAY}
       />,
       {
+        nonce: NONCE,
         onShellReady() {
           shellRendered = true;
           const body = new PassThrough();

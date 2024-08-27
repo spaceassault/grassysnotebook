@@ -13,7 +13,7 @@ export default function Navbar() {
     <>
     <nav className="flex items-center justify-between px-6 py-9 lg:px-12 text-foreground">
       <div className="flex items-center space-x-6">
-      <NavLink to="/" className="ml-8 text-2xl md:text-3xl lg:text-4xl font-bold" prefetch="intent">
+      <NavLink to="/" className="ml-8 text-2xl md:text-3xl lg:text-4xl font-bold" prefetch="intent" unstable_viewTransition>
         <LogoHorizontal className="h-auto w-96 max-w-[14rem] md:max-w-[24rem] lg:max-w-[28rem]" />
         {/* <img
             className="h-28 w-auto"
@@ -27,11 +27,11 @@ export default function Navbar() {
         <Input placeholder="Search" className="h-8" />
       </div> */}
       <div className="hidden md:flex md:items-center md:space-x-6">
-        <NavLink to="/" className="hover:underline" prefetch="intent">
+        <NavLink to="/" className="hover:underline" prefetch="intent" unstable_viewTransition>
           Home 
         </NavLink>
         <Separator orientation="vertical" className="h-5 w-[1px] bg-foreground" />
-        <NavLink to="/about/index" className="hover:underline" prefetch="intent">
+        <NavLink to="/about/index" className="hover:underline" prefetch="intent" unstable_viewTransition>
           About
         </NavLink>
         <Separator orientation="vertical" className="h-5 w-[1px] bg-foreground" />
@@ -45,13 +45,13 @@ export default function Navbar() {
           <DropdownMenuContent className="mr-8">
             <DropdownMenuGroup >
                 <DropdownMenuItem >
-                  <NavLink to="/" prefetch="intent">
+                  <NavLink to="/" prefetch="intent" unstable_viewTransition>
                   Home
                   </NavLink>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem >
-                  <NavLink to="/about/index" prefetch="intent" >
+                  <NavLink to="/about/index" prefetch="intent" unstable_viewTransition>
                   About
                   </NavLink>
                 </DropdownMenuItem>
