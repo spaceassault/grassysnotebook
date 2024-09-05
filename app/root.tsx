@@ -46,9 +46,9 @@ export interface LoaderData {
     honeyProps: ReturnType<typeof honeypot.getInputProps>;
   }
   nonce: string;
-};
+}
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request,context }: LoaderFunctionArgs) {
   const themeSession = await getThemeSession(request);
   const honeyProps = honeypot.getInputProps()
 
@@ -57,7 +57,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     theme: themeSession.getTheme(),
     honeyProps,
     },
-    nonce: generateNonce(),
+    nonce: context.nonce,
   };
 
   return data;
@@ -68,12 +68,12 @@ export interface DocumentProps {
   children?: ReactNode;
 }
 
-const nonce = "secretnoncevalue";
+// const nonce = "secretnoncevalue";
 
 function App({ title }: DocumentProps) {
-  const data = useLoaderData<LoaderData>().data;
+  const { data, nonce } = useLoaderData<LoaderData>();
   // const nonce = useLoaderData<LoaderData>().nonce;
-  console.log("nonce", nonce || "Nonce is null")
+  console.log("Root nonce", nonce || "Nonce is null")
 
   const [theme] = useTheme();
   const location = useLocation();

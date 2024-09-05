@@ -15,6 +15,7 @@ import LatestArticle from "~/components/latestArticle";
 import { HoneypotInputs } from "remix-utils/honeypot/react";
 import { honeypot } from "~/utils/honeypot.server";
 import { Skeleton } from "~/components/ui/skeleton";
+import type { SubmissionResponse } from "@conform-to/react";
 
 //zod schema for newsletter signup
 const schema = z.object({
@@ -77,13 +78,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     return json({ success: true, message: "Thank you for subscribing!"  });
   } catch (error) {
-    return json({ success: false, error: error.message });
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    return json({ success: false, error: errorMessage });
   }
 
   };
 
 export default function Index() {
-  const lastResult = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>() as SubmissionResponse<typeof schema>;
   const data = useLoaderData<typeof loader>();
   
 	const [form, fields] = useForm({

@@ -9,6 +9,7 @@ import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { default as rehypePrettyCode } from "rehype-pretty-code";
 import { vercelPreset } from '@vercel/remix/vite';
 
+
 export default defineConfig({
   plugins: [
     mdx({

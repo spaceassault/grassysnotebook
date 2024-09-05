@@ -5,5 +5,14 @@
     "framework": "remix",
     "installCommand": "npm install",
     "redirects": [],
-    "trailingSlash": false
+    "trailingSlash": false,
+    "build": {
+        "env": {
+            "ENABLE_VC_BUILD": "1"
+        }
+    },
+    "rewrites": [
+        { "source": "/(.*)", "destination": "/api/server" }
+    ]
+    
 }

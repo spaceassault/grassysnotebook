@@ -22,7 +22,7 @@ export default function Stream() {
           </div>
         }> 
             <Await resolve={data.delayedData}>
-                {loadedData => <div>{loadedData}</div>}
+                {(loadedData) => <div>{loadedData}</div>}
             </Await>
         </React.Suspense> 
     );
