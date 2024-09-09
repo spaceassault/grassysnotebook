@@ -6,11 +6,13 @@
 
 import { PassThrough } from "node:stream";
 
-import type { AppLoadContext, EntryContext } from "@remix-run/node";
-import { createReadableStreamFromReadable } from "@remix-run/node";
+import type { EntryContext, AppLoadContext } from "@remix-run/node";
+import { createReadableStreamFromReadable } from "@remix-run/node/dist/stream";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
+import { generateNonce } from "./utils/nonce-provider.server";
+import { NonceProvider } from "./utils/hooks/use-nonce";
 
 const ABORT_DELAY = 5_000;
 
@@ -22,14 +24,24 @@ export default function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-  loadContext: AppLoadContext
 ) {
-  const nonce = loadContext.nonce as string;
-  if (!nonce) {
-    console.warn("Nonce is undefined in entry.server.tsx");
-  } else {
-    console.log("Server nonce", nonce);
-  }
+  const nonce = generateNonce();
+  // console.log("Generated nonce:", nonce); // For debugging
+
+  // Set CSP header
+  // responseHeaders.set(
+  //   "Content-Security-Policy",
+  //   `script-src 'nonce-${nonce}' 'strict-dynamic' https: 'unsafe-inline';` +
+  //   `style-src 'self' 'unsafe-inline';` +
+  //   `img-src 'self' data: https:;` +
+  //   `font-src 'self';` +
+  //   `object-src 'none';` +
+  //   `base-uri 'self';` +
+  //   `form-action 'self';` +
+  //   `frame-ancestors 'none';` +
+  //   `block-all-mixed-content;` +
+  //   `upgrade-insecure-requests;`
+  // );
 
   return isbot(request.headers.get("user-agent") || "")
     ? handleBotRequest(
@@ -53,18 +65,19 @@ function handleBotRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-  nonce: string
+  nonce: string | undefined
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
+      <NonceProvider value={nonce ?? ""}>
       <RemixServer
         context={remixContext}
         url={request.url}
         abortDelay={ABORT_DELAY}
-      />,
+      />
+      </NonceProvider>,
       {
-        nonce,
         onAllReady() {
           shellRendered = true;
           const body = new PassThrough();
@@ -105,18 +118,19 @@ function handleBrowserRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-  nonce: string
+  nonce: string | undefined
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
+      <NonceProvider value={nonce ?? ""}>
       <RemixServer
         context={remixContext}
         url={request.url}
         abortDelay={ABORT_DELAY}
-      />,
+      />
+      </NonceProvider>,
       {
-        nonce,
         onShellReady() {
           shellRendered = true;
           const body = new PassThrough();
@@ -151,3 +165,4 @@ function handleBrowserRequest(
     setTimeout(abort, ABORT_DELAY);
   });
 }
+

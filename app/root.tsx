@@ -10,7 +10,8 @@ import {
   useLocation,
   useRouteError,
 } from "@remix-run/react";
-import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import tailwindStyles from '~/styles/tailwind.css?url'
 import Navbar from "./components/navbar";
 import { getThemeSession } from "~/utils/theme.server";
@@ -25,7 +26,7 @@ import { SpeedInsights } from "@vercel/speed-insights/remix"
 import { honeypot } from "./utils/honeypot.server";
 import { HoneypotProvider } from 'remix-utils/honeypot/react';
 import proseStyles from '~/styles/prose.css?url'
-import { generateNonce } from "./utils/nonce-provider.server";
+import { useNonce } from "./utils/hooks/use-nonce";
 
 // Use the links function to include the stylesheet
 export const links: LinksFunction = () => [
@@ -45,10 +46,9 @@ export interface LoaderData {
     theme: Theme | null;
     honeyProps: ReturnType<typeof honeypot.getInputProps>;
   }
-  nonce: string;
 }
 
-export async function loader({ request,context }: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const themeSession = await getThemeSession(request);
   const honeyProps = honeypot.getInputProps()
 
@@ -56,8 +56,7 @@ export async function loader({ request,context }: LoaderFunctionArgs) {
     data: {
     theme: themeSession.getTheme(),
     honeyProps,
-    },
-    nonce: context.nonce,
+    }
   };
 
   return data;
@@ -68,13 +67,10 @@ export interface DocumentProps {
   children?: ReactNode;
 }
 
-// const nonce = "secretnoncevalue";
-
 function App({ title }: DocumentProps) {
-  const { data, nonce } = useLoaderData<LoaderData>();
-  // const nonce = useLoaderData<LoaderData>().nonce;
-  console.log("Root nonce", nonce || "Nonce is null")
-
+  const { data } = useLoaderData<LoaderData>();
+  const nonce = useNonce()
+  
   const [theme] = useTheme();
   const location = useLocation();
 
@@ -119,8 +115,9 @@ function App({ title }: DocumentProps) {
         <Navbar />
         <Outlet />
         <Footer />
-        <ScrollRestoration />
-        <Scripts />
+        <ScrollRestoration nonce={nonce}/>
+        <Scripts nonce={nonce}/>
+        <LiveReload nonce={nonce}/>
       </body>
     </html>
   );

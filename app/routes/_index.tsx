@@ -35,9 +35,7 @@ export const meta: MetaFunction = () => {
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const category = url.searchParams.get("category") || undefined;
-  if (!category) {
-    console.log('No category');
-  }
+
 
   return defer({
     indexData: getIndexPageData(category),  // Do not await
@@ -154,7 +152,7 @@ export default function Index() {
               )}
               {(lastResult as { success: boolean; error: ReactNode })?.success === true && (
                 <div className="text-success mt-2">
-                  {(lastResult as { success: boolean; error: ReactNode })?.message}
+                  {(lastResult as { success: boolean; message?: string;  error: ReactNode })?.message}
                 </div>
               )}
               <Button type="submit" className="mt-2 py-2">Sign Up</Button>
